@@ -23,7 +23,7 @@ namespace lizzie.tests
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["+"] = Functions<LambdaCompiler.Nothing>.Add;
             var result = function(ctx, binder);
-            Assert.AreEqual(67, result);
+            Assert.That(result, Is.EqualTo(67));
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace lizzie.tests
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["+"] = Functions<LambdaCompiler.Nothing>.Add;
             var result = function(ctx, binder);
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace lizzie.tests
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["+"] = Functions<LambdaCompiler.Nothing>.Add;
             var result = function(ctx, binder);
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace lizzie.tests
 var(@foo,10)
 -(foo)");
             var result = lambda();
-            Assert.AreEqual(-10, result);
+            Assert.That(result, Is.EqualTo(-10));
         }
 
         [Test]
@@ -72,7 +72,7 @@ var(@foo,10)
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["+"] = Functions<LambdaCompiler.Nothing>.Add;
             var result = function(ctx, binder);
-            Assert.AreEqual(57.57, result);
+            Assert.That(result, Is.EqualTo(57.57));
         }
 
         [Test]
@@ -85,7 +85,7 @@ var(@foo,10)
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["+"] = Functions<LambdaCompiler.Nothing>.Add;
             var result = function(ctx, binder);
-            Assert.AreEqual("hello world", result);
+            Assert.That(result, Is.EqualTo("hello world"));
         }
 
         [Test]
@@ -98,7 +98,7 @@ var(@foo,10)
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["-"] = Functions<LambdaCompiler.Nothing>.Subtract;
             var result = function(ctx, binder);
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -111,7 +111,7 @@ var(@foo,10)
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["-"] = Functions<LambdaCompiler.Nothing>.Subtract;
             var result = function(ctx, binder);
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -124,7 +124,7 @@ var(@foo,10)
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["*"] = Functions<LambdaCompiler.Nothing>.Multiply;
             var result = function(ctx, binder);
-            Assert.AreEqual(35, result);
+            Assert.That(result, Is.EqualTo(35));
         }
 
         [Test]
@@ -137,7 +137,7 @@ var(@foo,10)
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["*"] = Functions<LambdaCompiler.Nothing>.Multiply;
             var result = function(ctx, binder);
-            Assert.AreEqual(70, result);
+            Assert.That(result, Is.EqualTo(70));
         }
 
         [Test]
@@ -150,7 +150,7 @@ var(@foo,10)
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["/"] = Functions<LambdaCompiler.Nothing>.Divide;
             var result = function(ctx, binder);
-            Assert.AreEqual(3.1, result);
+            Assert.That(result, Is.EqualTo(3.1));
         }
 
         [Test]
@@ -163,7 +163,7 @@ var(@foo,10)
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["/"] = Functions<LambdaCompiler.Nothing>.Divide;
             var result = function(ctx, binder);
-            Assert.AreEqual(10.01, result);
+            Assert.That(result, Is.EqualTo(10.01));
         }
 
         [Test]
@@ -176,7 +176,7 @@ var(@foo,10)
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["%"] = Functions<LambdaCompiler.Nothing>.Modulo;
             var result = function(ctx, binder);
-            Assert.AreEqual(2, result);
+            Assert.That(result, Is.EqualTo(2));
         }
 
         [Test]
@@ -189,7 +189,7 @@ var(@foo,10)
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["%"] = Functions<LambdaCompiler.Nothing>.Modulo;
             var result = function(ctx, binder);
-            Assert.AreEqual(1, result);
+            Assert.That(result, Is.EqualTo(1));
         }
     }
 }

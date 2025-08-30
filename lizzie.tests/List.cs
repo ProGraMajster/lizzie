@@ -18,12 +18,12 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile("list(57, 67, 77)");
             var result = lambda();
-            Assert.IsTrue(result is List<object>);
+            Assert.That(result is List<object>, Is.True);
             var list = result as List<object>;
-            Assert.AreEqual(3, list.Count);
-            Assert.AreEqual(57, list[0]);
-            Assert.AreEqual(67, list[1]);
-            Assert.AreEqual(77, list[2]);
+            Assert.That(list.Count, Is.EqualTo(3));
+            Assert.That(list[0], Is.EqualTo(57));
+            Assert.That(list[1], Is.EqualTo(67));
+            Assert.That(list[2], Is.EqualTo(77));
         }
 
         [Test]
@@ -33,7 +33,7 @@ namespace lizzie.tests
 var(@foo, list(57, 67, 77))
 count(foo)");
             var result = lambda();
-            Assert.AreEqual(3, result);
+            Assert.That(result, Is.EqualTo(3));
         }
 
         [Test]
@@ -43,7 +43,7 @@ count(foo)");
 var(@foo, list(57, 67, 77))
 get(foo, 2)");
             var result = lambda();
-            Assert.AreEqual(77, result);
+            Assert.That(result, Is.EqualTo(77));
         }
 
         [Test]
@@ -54,12 +54,12 @@ var(@foo, list(57))
 add(foo, 67, 77)
 foo");
             var result = lambda();
-            Assert.IsTrue(result is List<object>);
+            Assert.That(result is List<object>, Is.True);
             var list = result as List<object>;
-            Assert.AreEqual(3, list.Count);
-            Assert.AreEqual(57, list[0]);
-            Assert.AreEqual(67, list[1]);
-            Assert.AreEqual(77, list[2]);
+            Assert.That(list.Count, Is.EqualTo(3));
+            Assert.That(list[0], Is.EqualTo(57));
+            Assert.That(list[1], Is.EqualTo(67));
+            Assert.That(list[2], Is.EqualTo(77));
         }
 
         [Test]
@@ -69,11 +69,11 @@ foo");
 var(@foo, list(57, 67, 77, 87))
 slice(foo, 1, 3)");
             var result = lambda();
-            Assert.IsTrue(result is List<object>);
+            Assert.That(result is List<object>, Is.True);
             var list = result as List<object>;
-            Assert.AreEqual(2, list.Count);
-            Assert.AreEqual(67, list[0]);
-            Assert.AreEqual(77, list[1]);
+            Assert.That(list.Count, Is.EqualTo(2));
+            Assert.That(list[0], Is.EqualTo(67));
+            Assert.That(list[1], Is.EqualTo(77));
         }
 
         [Test]
@@ -83,12 +83,12 @@ slice(foo, 1, 3)");
 var(@foo, list(57, 67, 77, 87))
 slice(foo, 1)");
             var result = lambda();
-            Assert.IsTrue(result is List<object>);
+            Assert.That(result is List<object>, Is.True);
             var list = result as List<object>;
-            Assert.AreEqual(3, list.Count);
-            Assert.AreEqual(67, list[0]);
-            Assert.AreEqual(77, list[1]);
-            Assert.AreEqual(87, list[2]);
+            Assert.That(list.Count, Is.EqualTo(3));
+            Assert.That(list[0], Is.EqualTo(67));
+            Assert.That(list[1], Is.EqualTo(77));
+            Assert.That(list[2], Is.EqualTo(87));
         }
 
         [Test]
@@ -98,13 +98,13 @@ slice(foo, 1)");
 var(@foo, list(57, 67, 77, 87))
 slice(foo)");
             var result = lambda();
-            Assert.IsTrue(result is List<object>);
+            Assert.That(result is List<object>, Is.True);
             var list = result as List<object>;
-            Assert.AreEqual(4, list.Count);
-            Assert.AreEqual(57, list[0]);
-            Assert.AreEqual(67, list[1]);
-            Assert.AreEqual(77, list[2]);
-            Assert.AreEqual(87, list[3]);
+            Assert.That(list.Count, Is.EqualTo(4));
+            Assert.That(list[0], Is.EqualTo(57));
+            Assert.That(list[1], Is.EqualTo(67));
+            Assert.That(list[2], Is.EqualTo(77));
+            Assert.That(list[3], Is.EqualTo(87));
         }
 
         [Test]
@@ -114,9 +114,9 @@ slice(foo)");
 var(@foo, list(57, 67, 77, 87))
 slice(foo, 1, 1)");
             var result = lambda();
-            Assert.IsTrue(result is List<object>);
+            Assert.That(result is List<object>, Is.True);
             var list = result as List<object>;
-            Assert.AreEqual(0, list.Count);
+            Assert.That(list.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -132,11 +132,11 @@ each(@ix, foo, {
 })
 bar");
             var result = lambda();
-            Assert.IsTrue(result is List<object>);
+            Assert.That(result is List<object>, Is.True);
             var list = result as List<object>;
-            Assert.AreEqual(2, list.Count);
-            Assert.AreEqual(57, list[0]);
-            Assert.AreEqual(77, list[1]);
+            Assert.That(list.Count, Is.EqualTo(2));
+            Assert.That(list[0], Is.EqualTo(57));
+            Assert.That(list[1], Is.EqualTo(77));
         }
 
         [Test]
@@ -152,11 +152,11 @@ each(@ix, foo, {
 })
 bar");
             var result = lambda();
-            Assert.IsTrue(result is List<object>);
+            Assert.That(result is List<object>, Is.True);
             var list = result as List<object>;
-            Assert.AreEqual(2, list.Count);
-            Assert.AreEqual("57", list[0]);
-            Assert.AreEqual("77", list[1]);
+            Assert.That(list.Count, Is.EqualTo(2));
+            Assert.That(list[0], Is.EqualTo("57"));
+            Assert.That(list[1], Is.EqualTo("77"));
         }
 
         [Test]
@@ -172,12 +172,12 @@ each(@ix, foo, {
 })
 bar");
             var result = lambda();
-            Assert.IsTrue(result is List<object>);
+            Assert.That(result is List<object>, Is.True);
             var list = result as List<object>;
-            Assert.AreEqual(3, list.Count);
-            Assert.AreEqual(57, list[0]);
-            Assert.AreEqual(77, list[1]);
-            Assert.AreEqual(88.88, list[2]);
+            Assert.That(list.Count, Is.EqualTo(3));
+            Assert.That(list[0], Is.EqualTo(57));
+            Assert.That(list[1], Is.EqualTo(77));
+            Assert.That(list[2], Is.EqualTo(88.88));
         }
 
         [Test]
@@ -190,12 +190,12 @@ var(@bar, each(@ix, foo, {
 }))
 bar");
             var result = lambda();
-            Assert.IsTrue(result is List<object>);
+            Assert.That(result is List<object>, Is.True);
             var list = result as List<object>;
-            Assert.AreEqual(3, list.Count);
-            Assert.AreEqual(67, list[0]);
-            Assert.AreEqual(77, list[1]);
-            Assert.AreEqual(87, list[2]);
+            Assert.That(list.Count, Is.EqualTo(3));
+            Assert.That(list[0], Is.EqualTo(67));
+            Assert.That(list[1], Is.EqualTo(77));
+            Assert.That(list[2], Is.EqualTo(87));
         }
 
         [Test]
@@ -205,7 +205,7 @@ bar");
 var(@foo, +(apply(list(57,10,10))))
 ");
             var result = lambda();
-            Assert.AreEqual(77, result);
+            Assert.That(result, Is.EqualTo(77));
         }
     }
 }

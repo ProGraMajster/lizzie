@@ -22,7 +22,7 @@ if(foo, {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -35,7 +35,7 @@ if(foo, {
 })
 ");
             var result = lambda();
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -50,7 +50,7 @@ if(@foo(), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -65,7 +65,7 @@ if(@foo(""howdy""), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -80,7 +80,7 @@ if(foo, {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -95,7 +95,7 @@ if(foo, {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(67, result);
+            Assert.That(result, Is.EqualTo(67));
         }
 
         [Test]
@@ -110,7 +110,7 @@ if(eq(foo, 7), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -125,7 +125,7 @@ if(eq(foo, 7), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(67, result);
+            Assert.That(result, Is.EqualTo(67));
         }
 
         [Test]
@@ -140,7 +140,7 @@ if(not(eq(foo, 7)), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(67, result);
+            Assert.That(result, Is.EqualTo(67));
         }
 
         [Test]
@@ -155,7 +155,7 @@ if(not(eq(foo, 7)), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -170,7 +170,7 @@ if(mt(foo, 5), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -185,7 +185,7 @@ if(mt(foo, 7), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(67, result);
+            Assert.That(result, Is.EqualTo(67));
         }
 
         [Test]
@@ -200,7 +200,7 @@ if(lt(foo, 9), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -215,7 +215,7 @@ if(lt(foo, 3), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(67, result);
+            Assert.That(result, Is.EqualTo(67));
         }
 
         [Test]
@@ -230,7 +230,7 @@ if(mte(foo, 7), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -245,7 +245,7 @@ if(mte(foo, 7), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(67, result);
+            Assert.That(result, Is.EqualTo(67));
         }
 
         [Test]
@@ -260,7 +260,7 @@ if(lte(foo, 9), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -275,7 +275,7 @@ if(lte(foo, 3), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(67, result);
+            Assert.That(result, Is.EqualTo(67));
         }
 
         [Test]
@@ -292,7 +292,7 @@ if(any(@foo1, @foo2, @foo3), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -311,7 +311,7 @@ if(any(@foo1, @foo2(), @foo3), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -328,7 +328,7 @@ if(any(@foo1, @foo2, @foo3), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(67, result);
+            Assert.That(result, Is.EqualTo(67));
         }
 
         [Test]
@@ -342,7 +342,7 @@ if(any(), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(67, result);
+            Assert.That(result, Is.EqualTo(67));
         }
 
         [Test]
@@ -359,7 +359,7 @@ if(all(@foo1, @foo2, @foo3), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -376,7 +376,7 @@ if(all(@foo1, @foo2, @foo3), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(67, result);
+            Assert.That(result, Is.EqualTo(67));
         }
 
         [Test]
@@ -390,7 +390,7 @@ if(all(), {
 })
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
     }
 }

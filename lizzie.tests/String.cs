@@ -17,7 +17,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile(@"substr(""foobarxyz"", 3)");
             var result = lambda();
-            Assert.AreEqual("barxyz", result);
+            Assert.That(result, Is.EqualTo("barxyz"));
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile(@"substr(""foobarxyz"", 3, 3)");
             var result = lambda();
-            Assert.AreEqual("bar", result);
+            Assert.That(result, Is.EqualTo("bar"));
         }
 
         [Test]
@@ -33,7 +33,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile(@"length(""foo"")");
             var result = lambda();
-            Assert.AreEqual(3, result);
+            Assert.That(result, Is.EqualTo(3));
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile(@"replace(""foo"", ""o"", ""xx"")");
             var result = lambda();
-            Assert.AreEqual("fxxxx", result);
+            Assert.That(result, Is.EqualTo("fxxxx"));
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile(@"replace('foo', 'o', 'xx')");
             var result = lambda();
-            Assert.AreEqual("fxxxx", result);
+            Assert.That(result, Is.EqualTo("fxxxx"));
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile(@"'foo\'bar'");
             var result = lambda();
-            Assert.AreEqual("foo'bar", result);
+            Assert.That(result, Is.EqualTo("foo'bar"));
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile(@"string(57)");
             var result = lambda();
-            Assert.AreEqual("57", result);
+            Assert.That(result, Is.EqualTo("57"));
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile(@"number('57')");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile(@"string('57')");
             var result = lambda();
-            Assert.AreEqual("57", result);
+            Assert.That(result, Is.EqualTo("57"));
         }
 
         [Test]
@@ -89,7 +89,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile(@"""foo\""bar""");
             var result = lambda();
-            Assert.AreEqual("foo\"bar", result);
+            Assert.That(result, Is.EqualTo("foo\"bar"));
         }
 
         [Test]
@@ -102,7 +102,7 @@ string(map(
 ))
 ");
             var result = lambda();
-            Assert.AreEqual(@"{""foo"":57,""bar"":67}", result);
+            Assert.That(result, Is.EqualTo(@"{""foo"":57,""bar"":67}"));
         }
 
         [Test]
@@ -115,7 +115,7 @@ string(map(
 ))
 ");
             var result = lambda();
-            Assert.AreEqual(@"{""foo"":""howdy"",""bar"":""world""}", result);
+            Assert.That(result, Is.EqualTo(@"{""foo"":""howdy"",""bar"":""world""}"));
         }
 
         [Test]
@@ -128,7 +128,7 @@ string(map(
 ))
 ");
             var result = lambda();
-            Assert.AreEqual(@"{""foo"":""howdy"",""bar"":""wor\""ld""}", result);
+            Assert.That(result, Is.EqualTo(@"{""foo"":""howdy"",""bar"":""wor\""ld""}"));
         }
 
         [Test]
@@ -141,7 +141,7 @@ string(list(
 ))
 ");
             var result = lambda();
-            Assert.AreEqual(@"[""foo"",""bar""]", result);
+            Assert.That(result, Is.EqualTo(@"[""foo"",""bar""]"));
         }
 
         [Test]
@@ -158,7 +158,7 @@ string(list(
 ))
 ");
             var result = lambda();
-            Assert.AreEqual(@"[""foo"",{""bar1"":57,""bar2"":77,""bar3"":[1,2,{""hello"":""world""}]}]", result);
+            Assert.That(result, Is.EqualTo(@"[""foo"",{""bar1"":57,""bar2"":77,""bar3"":[1,2,{""hello"":""world""}]}]"));
         }
 
         [Test]
@@ -169,8 +169,8 @@ json(""{'foo':57}"")
 ");
             var result = lambda();
             var map = result as Dictionary<string, object>;
-            Assert.IsNotNull(map);
-            Assert.AreEqual(57, map["foo"]);
+            Assert.That(map, Is.Not.Null);
+            Assert.That(map["foo"], Is.EqualTo(57));
         }
 
         [Test]
@@ -181,11 +181,11 @@ json(""[0,1,2]"")
 ");
             var result = lambda();
             var list = result as List<object>;
-            Assert.IsNotNull(list);
-            Assert.AreEqual(3, list.Count);
-            Assert.AreEqual(0, list[0]);
-            Assert.AreEqual(1, list[1]);
-            Assert.AreEqual(2, list[2]);
+            Assert.That(list, Is.Not.Null);
+            Assert.That(list.Count, Is.EqualTo(3));
+            Assert.That(list[0], Is.EqualTo(0));
+            Assert.That(list[1], Is.EqualTo(1));
+            Assert.That(list[2], Is.EqualTo(2));
         }
 
         [Test]
@@ -196,16 +196,16 @@ json(""[0,1,{'foo':57,'bar':77,'hello':'world'}]"")
 ");
             var result = lambda();
             var list = result as List<object>;
-            Assert.IsNotNull(list);
-            Assert.AreEqual(3, list.Count);
-            Assert.AreEqual(0, list[0]);
-            Assert.AreEqual(1, list[1]);
+            Assert.That(list, Is.Not.Null);
+            Assert.That(list.Count, Is.EqualTo(3));
+            Assert.That(list[0], Is.EqualTo(0));
+            Assert.That(list[1], Is.EqualTo(1));
             var map = list[2] as Dictionary<string, object>;
-            Assert.IsNotNull(map);
-            Assert.AreEqual(3, map.Count);
-            Assert.AreEqual(57, map["foo"]);
-            Assert.AreEqual(77, map["bar"]);
-            Assert.AreEqual("world", map["hello"]);
+            Assert.That(map, Is.Not.Null);
+            Assert.That(map.Count, Is.EqualTo(3));
+            Assert.That(map["foo"], Is.EqualTo(57));
+            Assert.That(map["bar"], Is.EqualTo(77));
+            Assert.That(map["hello"], Is.EqualTo("world"));
         }
 
         [Test]
@@ -217,7 +217,7 @@ json(""[0,1,{'foo':57,'bar':77,'hello':'world'}]"")
             } catch {
                 success = true;
             }
-            Assert.AreEqual(true, success);
+            Assert.That(success, Is.True);
         }
 
         [Test]
@@ -229,7 +229,7 @@ json(""[0,1,{'foo':57,'bar':77,'hello':'world'}]"")
             } catch {
                 success = true;
             }
-            Assert.AreEqual(true, success);
+            Assert.That(success, Is.True);
         }
 
         [Test]
@@ -241,7 +241,7 @@ json(""[0,1,{'foo':57,'bar':77,'hello':'world'}]"")
             } catch {
                 success = true;
             }
-            Assert.AreEqual(true, success);
+            Assert.That(success, Is.True);
         }
     }
 }

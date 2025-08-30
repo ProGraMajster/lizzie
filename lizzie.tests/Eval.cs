@@ -16,7 +16,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile(@"eval(""+(57,10,10)"")");
             var result = lambda();
-            Assert.AreEqual(77, result);
+            Assert.That(result, Is.EqualTo(77));
         }
     }
 }

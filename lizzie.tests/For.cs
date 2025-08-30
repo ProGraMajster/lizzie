@@ -24,7 +24,7 @@ namespace lizzie.tests
   i
 })");
             var result = lambda();
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace lizzie.tests
   i
 })");
             var result = lambda();
-            Assert.AreEqual(2, result);
+            Assert.That(result, Is.EqualTo(2));
         }
     }
 }
