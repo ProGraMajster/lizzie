@@ -105,11 +105,13 @@ namespace lizzie
             binder["lte"] = Functions<TContext>.Lte;
             binder["not"] = Functions<TContext>.Not;
 
-            // Loop functions.
+            // Flow control functions.
             binder["try"] = Functions<TContext>.Try;
             binder["while"] = Functions<TContext>.While;
             binder["for"] = Functions<TContext>.For;
             binder["foreach"] = Functions<TContext>.Foreach;
+            binder["return"] = Functions<TContext>.Return;
+            binder["break"] = Functions<TContext>.Break;
 
 
             // Boolean algebraic functions.

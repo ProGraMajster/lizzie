@@ -289,7 +289,14 @@ namespace lizzie
                     }
 
                     // Evaluating function.
-                    return lambda(invocationContext, invocationBinder, invocationArguments);
+                    try
+                    {
+                        return lambda(invocationContext, invocationBinder, invocationArguments);
+                    }
+                    catch (ReturnException re)
+                    {
+                        return re.Value;
+                    }
 
                 } finally {
 
@@ -369,6 +376,28 @@ namespace lizzie
         });
 
         /// <summary>
+        /// Returns from the current function with an optional value.
+        /// </summary>
+        /// <value>The function wrapping the 'return keyword'.</value>
+        public static Function<TContext> Return => new Function<TContext>((ctx, binder, arguments) =>
+        {
+            if (arguments.Count > 1)
+                throw new LizzieRuntimeException("The 'return' keyword expects 0 or 1 arguments.");
+            throw new ReturnException(arguments.Get(0));
+        });
+
+        /// <summary>
+        /// Breaks out of the current loop, optionally returning a value.
+        /// </summary>
+        /// <value>The function wrapping the 'break keyword'.</value>
+        public static Function<TContext> Break => new Function<TContext>((ctx, binder, arguments) =>
+        {
+            if (arguments.Count > 1)
+                throw new LizzieRuntimeException("The 'break' keyword expects 0 or 1 arguments.");
+            throw new BreakException(arguments.Get(0));
+        });
+
+        /// <summary>
         /// Repeatedly evaluates a lambda as long as a condition returns a non-null value.
         ///
         /// Expects exactly two arguments; the first is a lambda evaluated before each
@@ -393,7 +422,15 @@ namespace lizzie
             object result = null;
             while (condition(ctx, binder, arguments) != null)
             {
-                result = body(ctx, binder, arguments);
+                try
+                {
+                    result = body(ctx, binder, arguments);
+                }
+                catch (BreakException be)
+                {
+                    result = be.Value;
+                    break;
+                }
             }
             return result;
         });
@@ -434,6 +471,14 @@ namespace lizzie
             try
             {
                 result = tryBlock(ctx, binder, arguments);
+            }
+            catch (ReturnException)
+            {
+                throw;
+            }
+            catch (BreakException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -485,7 +530,15 @@ namespace lizzie
             object result = null;
             while (condition(ctx, binder, arguments) != null)
             {
-                result = body(ctx, binder, arguments);
+                try
+                {
+                    result = body(ctx, binder, arguments);
+                }
+                catch (BreakException be)
+                {
+                    result = be.Value;
+                    break;
+                }
                 iterator(ctx, binder, arguments);
             }
             return result;
@@ -522,7 +575,15 @@ namespace lizzie
                     foreach (var ix in list)
                     {
                         binder[argName] = ix;
-                        result = body(ctx, binder, arguments);
+                        try
+                        {
+                            result = body(ctx, binder, arguments);
+                        }
+                        catch (BreakException be)
+                        {
+                            result = be.Value;
+                            break;
+                        }
                     }
                 }
                 finally
@@ -538,7 +599,15 @@ namespace lizzie
                     foreach (var ix in map.Keys)
                     {
                         binder[argName] = ix;
-                        result = body(ctx, binder, arguments);
+                        try
+                        {
+                            result = body(ctx, binder, arguments);
+                        }
+                        catch (BreakException be)
+                        {
+                            result = be.Value;
+                            break;
+                        }
                     }
                 }
                 finally
