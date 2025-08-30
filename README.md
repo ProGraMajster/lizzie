@@ -53,7 +53,6 @@ you to through C#, VB.NET or F#.
 
 The core library also includes basic flow control such as `if` branching and
 `while`, `for`, and `foreach` loops for simple iteration.
-
 ## What is a Symbolic Delegate?
 
 A Symbolic Delegate is a CLR delegate that is dynamically looked up during runtime

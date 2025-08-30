@@ -110,6 +110,7 @@ namespace lizzie
             binder["for"] = Functions<TContext>.For;
             binder["foreach"] = Functions<TContext>.Foreach;
 
+
             // Boolean algebraic functions.
             binder["any"] = Functions<TContext>.Any;
             binder["all"] = Functions<TContext>.All;
