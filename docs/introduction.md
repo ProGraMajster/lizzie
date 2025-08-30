@@ -498,6 +498,9 @@ foreach(@item, list(1,2,3), {
 })
 ```
 
+Any loop can be terminated prematurely with the `break` keyword. An optional
+argument to `break` becomes the value returned from the loop.
+
 ### The definition of truth in Lizzie
 
 Lizzie does not have any explicit _"true"_ or _"false"_ boolean types or values.
@@ -522,11 +525,12 @@ This is called _"implicit conversion to boolean"_, and everything in Lizzie,
 including the boolean value of _"false"_, will in fact evaluate to true.
 The only thing that evaluates to _"false"_ is null.
 
-### Wait, where's the return keyword?
+### Returning from a function
 
-Lizzie does not have a return keyword. This is because inside of a lambda object,
-whatever is evaluated last, before the lambda returns, will be implicitly returned
-as the _"value"_ of the lambda. Let's illustrate this with an example.
+In addition to implicitly returning the value of the last statement in a lambda,
+Lizzie also supports an explicit `return` keyword. Invoking `return` will stop
+execution of the current function and return the specified value, or `null` if
+no value is supplied. The following illustrates its use.
 
 ```javascript
 /*
@@ -539,9 +543,9 @@ var(@foo, function({
    * a value, otherwise we return 67
    */
   if(input, {
-    57
+    return(57)
   }, {
-    67
+    return(67)
   })
 
 }, @input))

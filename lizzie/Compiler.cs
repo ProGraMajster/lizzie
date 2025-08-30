@@ -104,12 +104,24 @@ namespace lizzie
             return new Lambda<TContext>((ctx, binder) => {
 
                 /*
-                 * Looping through each symbolic delegate, returning the 
+                 * Looping through each symbolic delegate, returning the
                  * return value from the last to caller.
                  */
                 object result = null;
-                foreach (var ix in functions) {
-                    result = ix(ctx, binder, null);
+                try
+                {
+                    foreach (var ix in functions)
+                    {
+                        result = ix(ctx, binder, null);
+                    }
+                }
+                catch (ReturnException re)
+                {
+                    return re.Value;
+                }
+                catch (BreakException)
+                {
+                    throw new LizzieRuntimeException("'break' invoked outside of a loop.");
                 }
                 return result;
             });
