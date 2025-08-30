@@ -19,7 +19,7 @@ namespace lizzie.tests
             var code = "a(1)";
             var tokenizer = new Tokenizer(new LizzieTokenizer());
             var list = new List<string>(tokenizer.Tokenize(code));
-            Assert.AreEqual(4, list.Count);
+            Assert.That(list.Count, Is.EqualTo(4));
         }
 
         [Test]
@@ -28,7 +28,7 @@ namespace lizzie.tests
             var code = @"a(""foo"")";
             var tokenizer = new Tokenizer(new LizzieTokenizer());
             var list = new List<string>(tokenizer.Tokenize(code));
-            Assert.AreEqual(6, list.Count);
+            Assert.That(list.Count, Is.EqualTo(6));
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace lizzie.tests
             var code = @"a(""foo"", 5, ""bar"")";
             var tokenizer = new Tokenizer(new LizzieTokenizer());
             var list = new List<string>(tokenizer.Tokenize(code));
-            Assert.AreEqual(12, list.Count);
+            Assert.That(list.Count, Is.EqualTo(12));
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace lizzie.tests
             var code = @"a(""foo"", bar(5), ""bar"")";
             var tokenizer = new Tokenizer(new LizzieTokenizer());
             var list = new List<string>(tokenizer.Tokenize(code));
-            Assert.AreEqual(15, list.Count);
+            Assert.That(list.Count, Is.EqualTo(15));
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace lizzie.tests
             var code = @"  a (   ""\""fo\""o""   ,bar(  5 )     ,""bar""   )   ";
             var tokenizer = new Tokenizer(new LizzieTokenizer());
             var list = new List<string>(tokenizer.Tokenize(code));
-            Assert.AreEqual(15, list.Count);
+            Assert.That(list.Count, Is.EqualTo(15));
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace lizzie.tests
             var code = @"a(""foo"", bar(5)) // , ""bar"")";
             var tokenizer = new Tokenizer(new LizzieTokenizer());
             var list = new List<string>(tokenizer.Tokenize(code));
-            Assert.AreEqual(11, list.Count);
+            Assert.That(list.Count, Is.EqualTo(11));
         }
 
         [Test]
@@ -79,7 +79,7 @@ a(""foo"" /* comment */,
 jo()";
             var tokenizer = new Tokenizer(new LizzieTokenizer());
             var list = new List<string>(tokenizer.Tokenize(code));
-            Assert.AreEqual(14, list.Count);
+            Assert.That(list.Count, Is.EqualTo(14));
         }
 
         [Test]
@@ -93,7 +93,7 @@ jo()";
             } catch (LizzieTokenizerException) {
                 success = true;
             }
-            Assert.AreEqual(true, success);
+            Assert.That(success, Is.True);
         }
 
         [Test]
@@ -102,7 +102,7 @@ jo()";
             var code = @"/**/";
             var tokenizer = new Tokenizer(new LizzieTokenizer());
             var list = new List<string>(tokenizer.Tokenize(code));
-            Assert.AreEqual(0, list.Count);
+            Assert.That(list.Count, Is.EqualTo(0));
         }
     }
 }

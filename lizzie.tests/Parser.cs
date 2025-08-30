@@ -21,7 +21,7 @@ namespace lizzie.tests
             var ctx = new LambdaCompiler.Nothing();
             var binder = new Binder<LambdaCompiler.Nothing>();
             var result = function(ctx, binder);
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -33,7 +33,7 @@ namespace lizzie.tests
             var ctx = new LambdaCompiler.Nothing();
             var binder = new Binder<LambdaCompiler.Nothing>();
             var result = function(ctx, binder);
-            Assert.AreEqual(57.67, result);
+            Assert.That(result, Is.EqualTo(57.67));
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace lizzie.tests
             var ctx = new LambdaCompiler.Nothing();
             var binder = new Binder<LambdaCompiler.Nothing>();
             var result = function(ctx, binder);
-            Assert.AreEqual(5767.0, result);
+            Assert.That(result, Is.EqualTo(5767.0));
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace lizzie.tests
             var ctx = new LambdaCompiler.Nothing();
             var binder = new Binder<LambdaCompiler.Nothing>();
             var result = function(ctx, binder);
-            Assert.AreEqual(57.67, result);
+            Assert.That(result, Is.EqualTo(57.67));
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace lizzie.tests
             var ctx = new LambdaCompiler.Nothing();
             var binder = new Binder<LambdaCompiler.Nothing>();
             var result = function(ctx, binder);
-            Assert.AreEqual("57", result);
+            Assert.That(result, Is.EqualTo("57"));
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace lizzie.tests
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["foo"] = "bar";
             var result = function(ctx, binder);
-            Assert.AreEqual("bar", result);
+            Assert.That(result, Is.EqualTo("bar"));
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace lizzie.tests
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["foo"] = 57;
             var result = function(ctx, binder);
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace lizzie.tests
                 return 57;
             });
             var result = function(ctx, binder);
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace lizzie.tests
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["foo"] = new LambdaCompiler.Nothing();
             var result = function(ctx, binder);
-            Assert.IsTrue(result is LambdaCompiler.Nothing);
+            Assert.That(result is LambdaCompiler.Nothing, Is.True);
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace lizzie.tests
                 return new LambdaCompiler.Nothing();
             });
             var result = function(ctx, binder);
-            Assert.IsTrue(result is LambdaCompiler.Nothing);
+            Assert.That(result is LambdaCompiler.Nothing, Is.True);
         }
 
         [Test]
@@ -151,7 +151,7 @@ namespace lizzie.tests
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["foo"] = 57;
             var result = function(ctx, binder);
-            Assert.AreEqual("foo", result);
+            Assert.That(result, Is.EqualTo("foo"));
         }
 
         [Test]
@@ -163,7 +163,7 @@ namespace lizzie.tests
             var ctx = new SimpleValues() { ValueInteger = 57 };
             var binder = new Binder<SimpleValues>();
             var result = function(ctx, binder);
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -175,7 +175,7 @@ namespace lizzie.tests
             var ctx = new SimpleValues();
             var binder = new Binder<SimpleValues>();
             var result = function(ctx, binder);
-            Assert.AreEqual(57, ctx.ValueInteger);
+            Assert.That(ctx.ValueInteger, Is.EqualTo(57));
         }
 
         [Test]
@@ -187,8 +187,8 @@ namespace lizzie.tests
             var ctx = new SimpleValues() { ValueInteger = 57 };
             var binder = new Binder<SimpleValues>();
             var result = function(ctx, binder);
-            Assert.IsNull(result);
-            Assert.AreEqual("57", ctx.ValueString);
+            Assert.That(result, Is.Null);
+            Assert.That(ctx.ValueString, Is.EqualTo("57"));
         }
 
         [Test]
@@ -202,8 +202,8 @@ set-value-integer(67)";
             var ctx = new SimpleValues();
             var binder = new Binder<SimpleValues>();
             var result = function(ctx, binder);
-            Assert.IsNull(result);
-            Assert.AreEqual(67, ctx.ValueInteger);
+            Assert.That(result, Is.Null);
+            Assert.That(ctx.ValueInteger, Is.EqualTo(67));
         }
 
         [Test]
@@ -217,8 +217,8 @@ add-integers(get-constant-integer(), get-value-integer())
             var ctx = new SimpleValues() { ValueInteger = 10 };
             var binder = new Binder<SimpleValues>();
             var result = function(ctx, binder);
-            Assert.IsNull(result);
-            Assert.AreEqual(67, ctx.ValueInteger);
+            Assert.That(result, Is.Null);
+            Assert.That(ctx.ValueInteger, Is.EqualTo(67));
         }
 
         [Test]
@@ -241,8 +241,8 @@ add-integers(
             var ctx = new SimpleValues();
             var binder = new Binder<SimpleValues>();
             var result = function(ctx, binder);
-            Assert.IsNull(result);
-            Assert.AreEqual(77, ctx.ValueInteger);
+            Assert.That(result, Is.Null);
+            Assert.That(ctx.ValueInteger, Is.EqualTo(77));
         }
 
         [Test]
@@ -254,7 +254,7 @@ add-integers(
             var ctx = new LambdaCompiler.Nothing();
             var binder = new Binder<LambdaCompiler.Nothing>();
             var result = function(ctx, binder);
-            Assert.IsTrue(result is Function<LambdaCompiler.Nothing>);
+            Assert.That(result is Function<LambdaCompiler.Nothing>, Is.True);
         }
     }
 }

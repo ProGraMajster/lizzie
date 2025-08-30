@@ -20,7 +20,7 @@ namespace lizzie.tests
   57
 })");
             var result = lambda();
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -33,7 +33,7 @@ while({
   set(@i, +(i, 1))
 })");
             var result = lambda();
-            Assert.AreEqual(3, result);
+            Assert.That(result, Is.EqualTo(3));
         }
     }
 }

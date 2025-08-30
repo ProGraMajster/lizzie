@@ -22,7 +22,7 @@ var(@foo, function({
 }))
 foo()");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -34,7 +34,7 @@ var(@foo, function({
 }))
 foo()");
             var result = lambda();
-            Assert.AreEqual("Hello World", result);
+            Assert.That(result, Is.EqualTo("Hello World"));
         }
 
         [Test]
@@ -46,7 +46,7 @@ var(@foo, function({
 }, @input))
 foo(""Thomas"")");
             var result = lambda();
-            Assert.AreEqual("Hello Thomas", result);
+            Assert.That(result, Is.EqualTo("Hello Thomas"));
         }
 
         [Test]
@@ -58,7 +58,7 @@ var(@foo, function({
 }, @name, @old))
 foo(""Thomas"", 44)");
             var result = lambda();
-            Assert.AreEqual("Hello Thomas it seems you are 44 years old", result);
+            Assert.That(result, Is.EqualTo("Hello Thomas it seems you are 44 years old"));
         }
 
         [Test]
@@ -73,7 +73,7 @@ var(@foo, function({
 }))
 foo()");
             var result = lambda();
-            Assert.AreEqual(77, result);
+            Assert.That(result, Is.EqualTo(77));
         }
 
         [Test]
@@ -89,7 +89,7 @@ var(@foo, function({
 }))
 foo()");
             var result = lambda();
-            Assert.AreEqual(77, result);
+            Assert.That(result, Is.EqualTo(77));
         }
 
         [Test]
@@ -107,7 +107,7 @@ bar");
             } catch(LizzieRuntimeException) {
                 success = true;
             }
-            Assert.AreEqual(true, success);
+            Assert.That(success, Is.True);
         }
 
         [Test]
@@ -124,7 +124,7 @@ var(@func1, function({
 func1('success')
 ");
             var result = lambda();
-            Assert.AreEqual("success_yup", result);
+            Assert.That(result, Is.EqualTo("success_yup"));
         }
 
         [Test]
@@ -146,7 +146,7 @@ func2('success')
             } catch(LizzieRuntimeException) {
                 success = true;
             }
-            Assert.AreEqual(true, success);
+            Assert.That(success, Is.True);
         }
 
         [Test]
@@ -162,7 +162,7 @@ var(@func2, function({
 +(func1('foo'), func2('bar'))
 ");
             var result = lambda();
-            Assert.AreEqual("success1_foo_success2_bar", result);
+            Assert.That(result, Is.EqualTo("success1_foo_success2_bar"));
         }
 
         [Test]
@@ -170,7 +170,7 @@ var(@func2, function({
         {
             var lambda = LambdaCompiler.Compile("");
             var result = lambda();
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -182,7 +182,7 @@ var(@func, function({
 func()
 ");
             var result = lambda();
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

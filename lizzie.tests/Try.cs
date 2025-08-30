@@ -29,9 +29,9 @@ var(@result, try({
 list(result, finallyFlag, catchFlag)
 ");
             var list = lambda() as List<object>;
-            Assert.AreEqual(57, list[0]);
-            Assert.AreEqual(1, list[1]);
-            Assert.IsNull(list[2]);
+            Assert.That(list[0], Is.EqualTo(57));
+            Assert.That(list[1], Is.EqualTo(1));
+            Assert.That(list[2], Is.Null);
         }
 
         [Test]
@@ -51,9 +51,9 @@ var(@result, try({
 list(result, finallyFlag, catchMsg)
 ");
             var list = lambda() as List<object>;
-            Assert.AreEqual(67, list[0]);
-            Assert.AreEqual(1, list[1]);
-            StringAssert.Contains("The 'add' keyword", list[2] as string);
+            Assert.That(list[0], Is.EqualTo(67));
+            Assert.That(list[1], Is.EqualTo(1));
+            Assert.That(list[2] as string, Does.Contain("The 'add' keyword"));
         }
     }
 }

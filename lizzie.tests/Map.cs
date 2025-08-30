@@ -18,7 +18,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile("map()");
             var result = lambda();
-            Assert.IsTrue(result is Dictionary<string, object>);
+            Assert.That(result is Dictionary<string, object>, Is.True);
         }
 
         [Test]
@@ -32,9 +32,9 @@ map(
 ");
             var result = lambda();
             var map = result as Dictionary<string, object>;
-            Assert.AreEqual(2, map.Count);
-            Assert.AreEqual(57, map["foo"]);
-            Assert.AreEqual(77, map["bar"]);
+            Assert.That(map.Count, Is.EqualTo(2));
+            Assert.That(map["foo"], Is.EqualTo(57));
+            Assert.That(map["bar"], Is.EqualTo(77));
         }
 
         [Test]
@@ -47,7 +47,7 @@ count(map(
 ))
 ");
             var result = lambda();
-            Assert.AreEqual(2, result);
+            Assert.That(result, Is.EqualTo(2));
         }
 
         [Test]
@@ -61,7 +61,7 @@ var(@my-map, map(
 get(my-map, 'foo')
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -76,10 +76,10 @@ my-map
 ");
             var result = lambda();
             var map = result as Dictionary<string, object>;
-            Assert.AreEqual(3, map.Count);
-            Assert.AreEqual(57, map["foo"]);
-            Assert.AreEqual(77, map["bar"]);
-            Assert.AreEqual(99, map["howdy"]);
+            Assert.That(map.Count, Is.EqualTo(3));
+            Assert.That(map["foo"], Is.EqualTo(57));
+            Assert.That(map["bar"], Is.EqualTo(77));
+            Assert.That(map["howdy"], Is.EqualTo(99));
         }
 
         [Test]
@@ -95,16 +95,16 @@ my-map
 ");
             var result = lambda();
             var map = result as Dictionary<string, object>;
-            Assert.AreEqual(4, map.Count);
-            Assert.AreEqual(57, map["foo"]);
-            Assert.AreEqual(77, map["bar"]);
-            Assert.AreEqual(99, map["howdy"]);
-            Assert.IsTrue(map["world"] is List<object>);
+            Assert.That(map.Count, Is.EqualTo(4));
+            Assert.That(map["foo"], Is.EqualTo(57));
+            Assert.That(map["bar"], Is.EqualTo(77));
+            Assert.That(map["howdy"], Is.EqualTo(99));
+            Assert.That(map["world"] is List<object>, Is.True);
             var list = map["world"] as List<object>;
-            Assert.AreEqual(3, list.Count);
-            Assert.AreEqual(1, list[0]);
-            Assert.AreEqual(2, list[1]);
-            Assert.AreEqual(3, list[2]);
+            Assert.That(list.Count, Is.EqualTo(3));
+            Assert.That(list[0], Is.EqualTo(1));
+            Assert.That(list[1], Is.EqualTo(2));
+            Assert.That(list[2], Is.EqualTo(3));
         }
 
         [Test]
@@ -119,15 +119,15 @@ my-map
 ");
             var result = lambda();
             var map = result as Dictionary<string, object>;
-            Assert.AreEqual(1, map.Count);
+            Assert.That(map.Count, Is.EqualTo(1));
             var list = map["world"] as List<object>;
-            Assert.IsNotNull(list);
-            Assert.AreEqual(5, list.Count);
-            Assert.AreEqual(1, list[0]);
-            Assert.AreEqual(2, list[1]);
-            Assert.AreEqual(3, list[2]);
-            Assert.AreEqual(4, list[3]);
-            Assert.AreEqual(5, list[4]);
+            Assert.That(list, Is.Not.Null);
+            Assert.That(list.Count, Is.EqualTo(5));
+            Assert.That(list[0], Is.EqualTo(1));
+            Assert.That(list[1], Is.EqualTo(2));
+            Assert.That(list[2], Is.EqualTo(3));
+            Assert.That(list[3], Is.EqualTo(4));
+            Assert.That(list[4], Is.EqualTo(5));
         }
 
         [Test]
@@ -145,16 +145,16 @@ my-map
 ");
             var result = lambda();
             var map = result as Dictionary<string, object>;
-            Assert.AreEqual(1, map.Count);
+            Assert.That(map.Count, Is.EqualTo(1));
             var list = map["world"] as List<object>;
-            Assert.IsNotNull(list);
-            Assert.AreEqual(4, list.Count);
-            Assert.AreEqual(1, list[0]);
-            Assert.AreEqual(2, list[1]);
-            Assert.AreEqual(3, list[2]);
+            Assert.That(list, Is.Not.Null);
+            Assert.That(list.Count, Is.EqualTo(4));
+            Assert.That(list[0], Is.EqualTo(1));
+            Assert.That(list[1], Is.EqualTo(2));
+            Assert.That(list[2], Is.EqualTo(3));
             var innerMap = list[3] as Dictionary<string, object>;
-            Assert.IsNotNull(innerMap);
-            Assert.AreEqual("bar", innerMap["foo"]);
+            Assert.That(innerMap, Is.Not.Null);
+            Assert.That(innerMap["foo"], Is.EqualTo("bar"));
         }
 
         [Test]
@@ -172,7 +172,7 @@ each(@ix, my-map, {
 result
 ");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
     }
 }

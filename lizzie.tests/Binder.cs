@@ -18,12 +18,12 @@ namespace lizzie.tests
             var original = new Binder<SimpleValues>();
             var clone = original.Clone();
             foreach (var ix in original.StaticItems) {
-                Assert.AreEqual(clone[ix], original[ix]);
+                Assert.That(original[ix], Is.EqualTo(clone[ix]));
             }
             foreach (var ix in clone.StaticItems) {
-                Assert.AreEqual(clone[ix], original[ix]);
+                Assert.That(original[ix], Is.EqualTo(clone[ix]));
             }
-            Assert.AreEqual(0, clone.StackCount);
+            Assert.That(clone.StackCount, Is.EqualTo(0));
         }
 
         [Test]
@@ -36,15 +36,15 @@ namespace lizzie.tests
             original["bar"] = 77;
             var clone = original.Clone();
             foreach (var ix in original.StaticItems) {
-                Assert.AreEqual(clone[ix], original[ix]);
+                Assert.That(original[ix], Is.EqualTo(clone[ix]));
             }
             foreach (var ix in clone.StaticItems) {
-                Assert.AreEqual(clone[ix], original[ix]);
+                Assert.That(original[ix], Is.EqualTo(clone[ix]));
             }
-            Assert.AreEqual(2, clone.StackCount);
-            Assert.AreEqual(77, clone["bar"]);
+            Assert.That(clone.StackCount, Is.EqualTo(2));
+            Assert.That(clone["bar"], Is.EqualTo(77));
             clone.PopStack();
-            Assert.AreEqual(57, clone["foo"]);
+            Assert.That(clone["foo"], Is.EqualTo(57));
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile(new SimpleValues(), "get-static()");
             var result = lambda();
-            Assert.AreEqual(7, result);
+            Assert.That(result, Is.EqualTo(7));
         }
 
         class SimpleValueExtended : SimpleValues
@@ -84,7 +84,7 @@ namespace lizzie.tests
             } catch {
                 error = true;
             }
-            Assert.AreEqual(true, error);
+            Assert.That(error, Is.True);
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace lizzie.tests
             SimpleValues simple = new SimpleValueExtended();
             var lambda = LambdaCompiler.Compile(simple, "extended-function(20)", true);
             var result = lambda();
-            Assert.AreEqual(77, result);
+            Assert.That(result, Is.EqualTo(77));
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace lizzie.tests
             SimpleValues simple = new SimpleValueExtended();
             var lambda = LambdaCompiler.Compile(simple, "+(get-constant-integer-2(), extended-function(3))", true);
             var result = lambda();
-            Assert.AreEqual(117, result);
+            Assert.That(result, Is.EqualTo(117));
         }
 
         [Test]
@@ -111,7 +111,7 @@ namespace lizzie.tests
             SimpleValues simple = new SimpleValueExtended();
             var lambda = LambdaCompiler.Compile(simple, "+(get-constant-integer(), extended-function(3))", true);
             var result = lambda();
-            Assert.AreEqual(117, result);
+            Assert.That(result, Is.EqualTo(117));
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace lizzie.tests
             SimpleValues simple = new SimpleValueExtended();
             var lambda = LambdaCompiler.Compile(simple, "+(get-static(), extended-function(20))", true);
             var result = lambda();
-            Assert.AreEqual(84, result);
+            Assert.That(result, Is.EqualTo(84));
         }
 
         [Test]
@@ -129,7 +129,7 @@ namespace lizzie.tests
             SimpleValues simple = new SimpleValueDoubleExtended();
             var lambda = LambdaCompiler.Compile(simple, "+(get-static(), extended-function(20), extended-function-2(3))", true);
             var result = lambda();
-            Assert.AreEqual(90, result);
+            Assert.That(result, Is.EqualTo(90));
         }
 
         class BaseClass1
@@ -156,7 +156,7 @@ namespace lizzie.tests
             BaseClass1 simple = new SuperClass1();
             var lambda = LambdaCompiler.Compile(simple, "foo()", true);
             var result = lambda();
-            Assert.AreEqual(77, result);
+            Assert.That(result, Is.EqualTo(77));
         }
 
         class BaseClass2
@@ -183,7 +183,7 @@ namespace lizzie.tests
             BaseClass2 simple = new SuperClass2();
             var lambda = LambdaCompiler.Compile(simple, "+(foo1(), foo2())", true);
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         class BaseClass3
@@ -231,7 +231,7 @@ namespace lizzie.tests
             BaseClass3 simple = new SuperClass3_2();
             var lambda = LambdaCompiler.Compile(simple, "+(foo1(), foo2(), foo3(), foo4(),foo5())", true);
             var result = lambda();
-            Assert.AreEqual(67, result);
+            Assert.That(result, Is.EqualTo(67));
         }
 
         [Test]
@@ -239,7 +239,7 @@ namespace lizzie.tests
         {
             SimpleValues simple = new SimpleValueDoubleExtended();
             var binder = new Binder<SimpleValues>(simple);
-            Assert.AreEqual(true, binder.DeeplyBound);
+            Assert.That(binder.DeeplyBound, Is.True);
         }
 
         [Test]
@@ -247,7 +247,7 @@ namespace lizzie.tests
         {
             SimpleValues simple = new SimpleValues();
             var binder = new Binder<SimpleValues>();
-            Assert.AreEqual(false, binder.DeeplyBound);
+            Assert.That(binder.DeeplyBound, Is.False);
         }
 
         [Test]
@@ -272,7 +272,7 @@ my-func()
             lambda();
 
             // Verifying instance is NOT deeply bound!
-            Assert.AreEqual(false, binder.DeeplyBound);
+            Assert.That(binder.DeeplyBound, Is.False);
         }
 
         [Test]
@@ -300,7 +300,7 @@ my-func()
             } catch {
                 success = true;
             }
-            Assert.AreEqual(true, success);
+            Assert.That(success, Is.True);
         }
     }
 }

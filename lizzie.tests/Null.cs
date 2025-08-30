@@ -18,7 +18,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile("null");
             var result = lambda();
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -30,7 +30,7 @@ if(eq(null, foo), {
   57
 })");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -42,7 +42,7 @@ if(not(eq(null, foo)), {
   57
 })");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
     }
 }

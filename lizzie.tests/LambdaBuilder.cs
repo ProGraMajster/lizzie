@@ -18,7 +18,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile("57");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -26,7 +26,7 @@ namespace lizzie.tests
         {
             var lambda = LambdaCompiler.Compile("%(/(+(5, *(5,-(20,15))),3),7)");
             var result = lambda();
-            Assert.AreEqual(3, result);
+            Assert.That(result, Is.EqualTo(3));
         }
 
         [Test]
@@ -38,7 +38,7 @@ var(@bar, +(foo, *(10,2)))
 bar";
             var lambda = LambdaCompiler.Compile(code);
             var result = lambda();
-            Assert.AreEqual(77, result);
+            Assert.That(result, Is.EqualTo(77));
         }
 
         [Test]
@@ -48,7 +48,7 @@ bar";
 var(@foo, var(@bar, 67))
 bar");
             var result = lambda();
-            Assert.AreEqual(67, result);
+            Assert.That(result, Is.EqualTo(67));
         }
 
         [Test]
@@ -58,7 +58,7 @@ bar");
 var(@foo, @var(@bar, 67))
 foo");
             var result = lambda();
-            Assert.IsTrue(result is Function<LambdaCompiler.Nothing>);
+            Assert.That(result is Function<LambdaCompiler.Nothing>, Is.True);
         }
 
         [Test]
@@ -73,7 +73,7 @@ bar");
             } catch (LizzieRuntimeException) {
                 success = true;
             }
-            Assert.IsTrue(success);
+            Assert.That(success, Is.True);
         }
 
         [Test]
@@ -84,7 +84,7 @@ var(@foo, @var(@bar, 57))
 foo()
 bar");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -111,15 +111,15 @@ var(@foo, +(55, bar, bar2))
 
             // Cloning a new binder and evaluating a new snippet of Lizzie code.
             var binder2 = masterBinder.Clone();
-            Assert.IsFalse(binder2.ContainsKey("bar2"));
+            Assert.That(binder2.ContainsKey("bar2"), Is.False);
             var lambda2 = LambdaCompiler.Compile<SimpleValues>(new SimpleValues(), (Binder<SimpleValues>)binder2, @"
 var(@foo, +(67, bar))
 ");
             var result2 = lambda2();
 
             // Sanity checking result.
-            Assert.AreEqual(67, result1);
-            Assert.AreEqual(77, result2);
+            Assert.That(result1, Is.EqualTo(67));
+            Assert.That(result2, Is.EqualTo(77));
         }
     }
 }

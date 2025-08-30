@@ -24,7 +24,7 @@ var(@foo, 57)";
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["var"] = Functions<LambdaCompiler.Nothing>.Var;
             var result = function(ctx, binder);
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -38,7 +38,7 @@ var(@foo, 57.67)";
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["var"] = Functions<LambdaCompiler.Nothing>.Var;
             var result = function(ctx, binder);
-            Assert.AreEqual(57.67, result);
+            Assert.That(result, Is.EqualTo(57.67));
         }
 
         [Test]
@@ -53,7 +53,7 @@ foo";
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["var"] = Functions<LambdaCompiler.Nothing>.Var;
             var result = function(ctx, binder);
-            Assert.AreEqual("bar", result);
+            Assert.That(result, Is.EqualTo("bar"));
         }
 
         [Test]
@@ -68,7 +68,7 @@ foo";
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["var"] = Functions<LambdaCompiler.Nothing>.Var;
             var result = function(ctx, binder);
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -85,7 +85,7 @@ foo";
             } catch (LizzieRuntimeException) {
                 success = true;
             }
-            Assert.IsTrue(success);
+            Assert.That(success, Is.True);
         }
 
         [Test]
@@ -105,7 +105,7 @@ var(@foo, 57)";
             } catch (LizzieRuntimeException) {
                 success = true;
             }
-            Assert.IsTrue(success);
+            Assert.That(success, Is.True);
         }
 
         [Test]
@@ -120,7 +120,7 @@ foo";
             var binder = new Binder<LambdaCompiler.Nothing>();
             binder["var"] = Functions<LambdaCompiler.Nothing>.Var;
             var result = function(ctx, binder);
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -137,7 +137,7 @@ foo";
             binder["var"] = Functions<LambdaCompiler.Nothing>.Var;
             binder["set"] = Functions<LambdaCompiler.Nothing>.Set;
             var result = function(ctx, binder);
-            Assert.AreEqual(67, result);
+            Assert.That(result, Is.EqualTo(67));
         }
 
         [Test]
@@ -154,7 +154,7 @@ foo";
             binder["var"] = Functions<LambdaCompiler.Nothing>.Var;
             binder["set"] = Functions<LambdaCompiler.Nothing>.Set;
             var result = function(ctx, binder);
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -174,7 +174,7 @@ var(@foo)";
             } catch(LizzieRuntimeException) {
                 success = true;
             }
-            Assert.AreEqual(true, success);
+            Assert.That(success, Is.True);
         }
 
         [Test]
@@ -191,7 +191,7 @@ foo";
             binder["var"] = Functions<LambdaCompiler.Nothing>.Var;
             binder["set"] = Functions<LambdaCompiler.Nothing>.Set;
             var result = function(ctx, binder);
-            Assert.AreEqual("bar", result);
+            Assert.That(result, Is.EqualTo("bar"));
         }
     }
 }
