@@ -851,6 +851,30 @@ back to caller. It will share the context object, but it will create a new stack
 not having access to the already dynamically declared variables. Notice that `eval`
 will load up the default keywords from the `LambdaCompiler` from you.
 
+### Concurrency
+
+Lizzie ships with primitive concurrency helpers exposed through the
+`task`, `await`, `thread` and `join` keywords.
+
+* `task` starts a new `Task` evaluating a lambda and returns the `Task` instance
+* `await` blocks until a `Task` completes and returns its result
+* `thread` starts a new `Thread` executing a lambda and returns the `Thread`
+* `join` blocks until a `Thread` has finished executing
+
+```javascript
+var(@t, task({
+  +(40, 2)
+}))
+await(t)   // => 42
+
+var(@res, 0)
+var(@th, thread({
+  set(@res, 5)
+}))
+join(th)
+res        // => 5
+```
+
 ### Lizzie types
 
 Lizzie is extremely weakly typed, and arguably only contains a handful of types.

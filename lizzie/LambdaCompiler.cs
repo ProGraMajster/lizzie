@@ -156,6 +156,12 @@ namespace lizzie
             // The eval function.
             binder["eval"] = Functions<TContext>.Eval;
 
+            // Concurrency functions.
+            binder["task"] = Functions<TContext>.Task;
+            binder["await"] = Functions<TContext>.Await;
+            binder["thread"] = Functions<TContext>.Thread;
+            binder["join"] = Functions<TContext>.Join;
+
             // Null is simply a constant yielding null.
             binder["null"] = null;
         }
