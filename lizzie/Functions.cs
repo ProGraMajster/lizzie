@@ -369,6 +369,36 @@ namespace lizzie
         });
 
         /// <summary>
+        /// Repeatedly evaluates a lambda as long as a condition returns a non-null value.
+        ///
+        /// Expects exactly two arguments; the first is a lambda evaluated before each
+        /// iteration to determine if the loop should continue, and the second is a lambda
+        /// representing the body of the loop. The last value produced by the body is
+        /// returned, or null if the body never executes.
+        /// </summary>
+        /// <value>The function wrapping the 'while keyword'.</value>
+        public static Function<TContext> While => new Function<TContext>((ctx, binder, arguments) =>
+        {
+            if (arguments.Count != 2)
+                throw new LizzieRuntimeException("The 'while' keyword expects exactly 2 arguments.");
+
+            var condition = arguments.Get(0) as Function<TContext>;
+            if (condition == null)
+                throw new LizzieRuntimeException("The 'while' keyword requires a lambda argument as its first argument.");
+
+            var body = arguments.Get(1) as Function<TContext>;
+            if (body == null)
+                throw new LizzieRuntimeException("The 'while' keyword requires a lambda argument as its second argument.");
+
+            object result = null;
+            while (condition(ctx, binder, arguments) != null)
+            {
+                result = body(ctx, binder, arguments);
+            }
+            return result;
+        });
+
+        /// <summary>
         /// Creates an equals function, that checks two or more objects for equality.
         ///
         /// This function will return null if any of the objects it is being asked

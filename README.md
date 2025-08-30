@@ -51,6 +51,9 @@ lends itself to richer rule based engines, and similar domain specific problems,
 where your code needs to be more dynamic in nature than that which the CLR allows
 you to through C#, VB.NET or F#.
 
+The core library also includes basic flow control such as `if` branching and
+`while` loops for simple iteration.
+
 ## What is a Symbolic Delegate?
 
 A Symbolic Delegate is a CLR delegate that is dynamically looked up during runtime
