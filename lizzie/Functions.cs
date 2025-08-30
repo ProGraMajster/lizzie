@@ -399,6 +399,113 @@ namespace lizzie
         });
 
         /// <summary>
+
+        /// Repeatedly executes a body lambda while a condition returns a non-null value.
+        /// An initialization lambda runs once before the first evaluation and an iterator
+        /// lambda runs after each iteration.
+        ///
+        /// Expects exactly four arguments; initialization, condition, iterator and body
+        /// lambdas respectively. Returns the last value produced by the body, or null if
+        /// the loop never executes.
+        /// </summary>
+        /// <value>The function wrapping the 'for keyword'.</value>
+        public static Function<TContext> For => new Function<TContext>((ctx, binder, arguments) =>
+        {
+            if (arguments.Count != 4)
+                throw new LizzieRuntimeException("The 'for' keyword expects exactly 4 arguments.");
+
+            var init = arguments.Get(0) as Function<TContext>;
+            if (init == null)
+                throw new LizzieRuntimeException("The 'for' keyword requires a lambda argument as its first argument.");
+
+            var condition = arguments.Get(1) as Function<TContext>;
+            if (condition == null)
+                throw new LizzieRuntimeException("The 'for' keyword requires a lambda argument as its second argument.");
+
+            var iterator = arguments.Get(2) as Function<TContext>;
+            if (iterator == null)
+                throw new LizzieRuntimeException("The 'for' keyword requires a lambda argument as its third argument.");
+
+            var body = arguments.Get(3) as Function<TContext>;
+            if (body == null)
+                throw new LizzieRuntimeException("The 'for' keyword requires a lambda argument as its fourth argument.");
+
+            // Execute initialization once.
+            init(ctx, binder, arguments);
+
+            object result = null;
+            while (condition(ctx, binder, arguments) != null)
+            {
+                result = body(ctx, binder, arguments);
+                iterator(ctx, binder, arguments);
+            }
+            return result;
+        });
+
+        /// <summary>
+        /// Iterates a list or map, evaluating a body lambda for each item. The first
+        /// argument must be a symbol used to reference the current item inside the
+        /// body. The second argument must be the list or map to iterate and the third
+        /// argument must be the body lambda. Returns the last value produced by the
+        /// body, or null if the sequence is empty.
+        /// </summary>
+        /// <value>The function wrapping the 'foreach keyword'.</value>
+        public static Function<TContext> Foreach => new Function<TContext>((ctx, binder, arguments) =>
+        {
+            if (arguments.Count < 3)
+                throw new LizzieRuntimeException("The 'foreach' keyword requires 3 arguments, and you tried to invoke it with fewer.");
+
+            var argName = arguments.Get(0) as string;
+            if (argName == null)
+                throw new LizzieRuntimeException("The 'foreach' function must be given a symbol name as its first argument.");
+            if (binder.ContainsDynamicKey(argName))
+                throw new LizzieRuntimeException($"The '{argName}' is already declared from before, hence you can't use it as an iterator for the 'foreach' function.");
+
+            var body = arguments.Get(2) as Function<TContext>;
+            if (body == null)
+                throw new LizzieRuntimeException("When invoking the 'foreach' function, the third argument must be a lambda object, e.g. '{ ... some code ... }'.");
+
+            object result = null;
+            if (arguments.Get(1) is List<object> list)
+            {
+                try
+                {
+                    foreach (var ix in list)
+                    {
+                        binder[argName] = ix;
+                        result = body(ctx, binder, arguments);
+                    }
+                }
+                finally
+                {
+                    if (binder.ContainsDynamicKey(argName))
+                        binder.RemoveKey(argName);
+                }
+            }
+            else if (arguments.Get(1) is Dictionary<string, object> map)
+            {
+                try
+                {
+                    foreach (var ix in map.Keys)
+                    {
+                        binder[argName] = ix;
+                        result = body(ctx, binder, arguments);
+                    }
+                }
+                finally
+                {
+                    if (binder.ContainsDynamicKey(argName))
+                        binder.RemoveKey(argName);
+                }
+            }
+            else
+            {
+                throw new LizzieRuntimeException("The 'foreach' function must be given either a 'map' or a 'list' as its 2nd argument.");
+            }
+            return result;
+        });
+
+        /// <summary>
         /// Creates an equals function, that checks two or more objects for equality.
         ///
         /// This function will return null if any of the objects it is being asked

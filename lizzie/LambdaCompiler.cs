@@ -107,6 +107,9 @@ namespace lizzie
 
             // Loop functions.
             binder["while"] = Functions<TContext>.While;
+            binder["for"] = Functions<TContext>.For;
+            binder["foreach"] = Functions<TContext>.Foreach;
+
 
             // Boolean algebraic functions.
             binder["any"] = Functions<TContext>.Any;

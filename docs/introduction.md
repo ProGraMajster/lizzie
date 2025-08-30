@@ -456,11 +456,12 @@ if(foo,{
 })
 ```
 
-In addition to branching with `if`, Lizzie also supports simple loops through the
-`while` function. It takes two lambdas; the first is evaluated before each
-iteration and as long as it returns a non-null value the second lambda, which is
-the body, will be executed. The `while` invocation yields the last value produced
-by the body, or `null` if the loop never executes.
+In addition to branching with `if`, Lizzie also supports simple loops through
+the `while`, `for`, and `foreach` functions. The `while` function takes two
+lambdas; the first is evaluated before each iteration and as long as it returns
+a non-null value the second lambda, which is the body, will be executed. The
+`while` invocation yields the last value produced by the body, or `null` if the
+loop never executes.
 
 ```javascript
 var(@i, 0)
@@ -472,6 +473,30 @@ while({
 ```
 
 The above example will loop until `i` is no longer less than `3`, returning `3`.
+
+The `for` function allows you to specify separate initialization, condition,
+iterator and body lambdas, mirroring a classic `for` loop.
+
+```javascript
+for({
+  var(@i, 0)
+}, {
+  lt(i, 3)
+}, {
+  set(@i, add(i, 1))
+}, {
+  i
+})
+```
+
+`foreach` iterates a list or map, binding each item to a symbol you supply and
+executing a body lambda for every element.
+
+```javascript
+foreach(@item, list(1,2,3), {
+  write(item)
+})
+```
 
 ### The definition of truth in Lizzie
 
