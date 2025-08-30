@@ -1366,5 +1366,90 @@ namespace lizzie
             var lambda = LambdaCompiler.Compile<TContext>(ctx, arg1);
             return lambda();
         });
+
+        /// <summary>
+        /// Creates and starts a new Task executing the specified lambda and
+        /// returns the <see cref="System.Threading.Tasks.Task"/> instance to the caller.
+        /// </summary>
+        /// <value>The function wrapping the 'task keyword'.</value>
+        public static Function<TContext> Task => new Function<TContext>((ctx, binder, arguments) =>
+        {
+            // Sanity checking.
+            if (arguments.Count != 1)
+                throw new LizzieRuntimeException("The 'task' keyword expects exactly 1 argument.");
+
+            // Retrieving lambda to execute inside the task.
+            var lambda = arguments.Get(0) as Function<TContext>;
+            if (lambda == null)
+                throw new LizzieRuntimeException("The 'task' keyword requires a lambda argument as its first argument.");
+
+            // Starting task and returning handle to caller.
+            return System.Threading.Tasks.Task<object>.Run(() => lambda(ctx, binder, new Arguments()));
+        });
+
+        /// <summary>
+        /// Blocks until the specified Task has completed and returns its result if any.
+        /// </summary>
+        /// <value>The function wrapping the 'await keyword'.</value>
+        public static Function<TContext> Await => new Function<TContext>((ctx, binder, arguments) =>
+        {
+            // Sanity checking.
+            if (arguments.Count != 1)
+                throw new LizzieRuntimeException("The 'await' keyword expects exactly 1 argument.");
+
+            // Retrieving task instance and waiting for completion.
+            var taskObj = arguments.Get(0);
+            var task = taskObj as System.Threading.Tasks.Task;
+            if (task == null)
+                throw new LizzieRuntimeException("The 'await' keyword expects a Task instance as its argument.");
+
+            task.Wait();
+
+            // Returning result for generic tasks if available.
+            var resultProperty = task.GetType().GetProperty("Result");
+            return resultProperty == null ? null : resultProperty.GetValue(task);
+        });
+
+        /// <summary>
+        /// Creates and starts a new Thread executing the specified lambda and
+        /// returns the <see cref="System.Threading.Thread"/> instance to the caller.
+        /// </summary>
+        /// <value>The function wrapping the 'thread keyword'.</value>
+        public static Function<TContext> Thread => new Function<TContext>((ctx, binder, arguments) =>
+        {
+            // Sanity checking.
+            if (arguments.Count != 1)
+                throw new LizzieRuntimeException("The 'thread' keyword expects exactly 1 argument.");
+
+            // Retrieving lambda to execute inside thread.
+            var lambda = arguments.Get(0) as Function<TContext>;
+            if (lambda == null)
+                throw new LizzieRuntimeException("The 'thread' keyword requires a lambda argument as its first argument.");
+
+            // Starting thread and returning handle to caller.
+            var thread = new System.Threading.Thread(() => lambda(ctx, binder, new Arguments()));
+            thread.Start();
+            return thread;
+        });
+
+        /// <summary>
+        /// Blocks until the specified Thread has finished executing.
+        /// </summary>
+        /// <value>The function wrapping the 'join keyword'.</value>
+        public static Function<TContext> Join => new Function<TContext>((ctx, binder, arguments) =>
+        {
+            // Sanity checking.
+            if (arguments.Count != 1)
+                throw new LizzieRuntimeException("The 'join' keyword expects exactly 1 argument.");
+
+            // Retrieving thread instance and waiting for completion.
+            var threadObj = arguments.Get(0);
+            var thread = threadObj as System.Threading.Thread;
+            if (thread == null)
+                throw new LizzieRuntimeException("The 'join' keyword expects a Thread instance as its argument.");
+
+            thread.Join();
+            return null;
+        });
     }
 }
