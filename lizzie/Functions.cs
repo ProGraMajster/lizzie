@@ -399,6 +399,55 @@ namespace lizzie
         });
 
         /// <summary>
+        /// Executes a try-catch-finally construct.
+        ///
+        /// Expects two or three arguments; the first is the lambda representing the
+        /// try block, the second is the catch lambda which will receive the caught
+        /// <see cref="Exception"/> as its first argument, and the optional third
+        /// argument is a finally lambda executed after the try/catch.
+        /// The function returns the result of the try lambda if no exception was
+        /// thrown, otherwise it returns the result of the catch lambda.
+        /// </summary>
+        /// <value>The function wrapping the 'try keyword'.</value>
+        public static Function<TContext> Try => new Function<TContext>((ctx, binder, arguments) =>
+        {
+            if (arguments.Count < 2 || arguments.Count > 3)
+                throw new LizzieRuntimeException("The 'try' keyword expects 2 or 3 arguments.");
+
+            var tryBlock = arguments.Get(0) as Function<TContext>;
+            if (tryBlock == null)
+                throw new LizzieRuntimeException("The 'try' keyword requires a lambda argument as its first argument.");
+
+            var catchBlock = arguments.Get(1) as Function<TContext>;
+            if (catchBlock == null)
+                throw new LizzieRuntimeException("The 'try' keyword requires a lambda argument as its second argument.");
+
+            Function<TContext> finallyBlock = null;
+            if (arguments.Count > 2)
+            {
+                finallyBlock = arguments.Get(2) as Function<TContext>;
+                if (finallyBlock == null)
+                    throw new LizzieRuntimeException("The 'try' keyword requires a lambda argument as its third argument if supplied.");
+            }
+
+            object result = null;
+            try
+            {
+                result = tryBlock(ctx, binder, arguments);
+            }
+            catch (Exception ex)
+            {
+                result = catchBlock(ctx, binder, new Arguments(ex));
+            }
+            finally
+            {
+                if (finallyBlock != null)
+                    finallyBlock(ctx, binder, arguments);
+            }
+            return result;
+        });
+
+        /// <summary>
 
         /// Repeatedly executes a body lambda while a condition returns a non-null value.
         /// An initialization lambda runs once before the first evaluation and an iterator
