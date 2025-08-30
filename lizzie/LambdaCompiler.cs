@@ -106,6 +106,7 @@ namespace lizzie
             binder["not"] = Functions<TContext>.Not;
 
             // Loop functions.
+            binder["try"] = Functions<TContext>.Try;
             binder["while"] = Functions<TContext>.While;
             binder["for"] = Functions<TContext>.For;
             binder["foreach"] = Functions<TContext>.Foreach;

@@ -19,7 +19,7 @@ namespace lizzie.tests
 }, {
   null
 }, {
-  set(@i, add(i, 1))
+  set(@i, +(i, 1))
 }, {
   i
 })");
@@ -35,7 +35,7 @@ namespace lizzie.tests
 }, {
   lt(i, 3)
 }, {
-  set(@i, add(i, 1))
+  set(@i, +(i, 1))
 }, {
   i
 })");

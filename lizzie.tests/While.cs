@@ -30,7 +30,7 @@ namespace lizzie.tests
 while({
   lt(i, 3)
 }, {
-  set(@i, add(i, 1))
+  set(@i, +(i, 1))
 })");
             var result = lambda();
             Assert.AreEqual(3, result);
