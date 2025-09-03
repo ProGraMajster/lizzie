@@ -8,6 +8,7 @@ namespace lizzie.Runtime
         None = 0,
         Time = 1 << 0,
         Async = 1 << 1,
-        Random = 1 << 2
+        Random = 1 << 2,
+        UnityMainThread = 1 << 3
     }
 }
