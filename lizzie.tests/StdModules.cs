@@ -11,10 +11,10 @@ namespace lizzie.tests
         private class TestLimiter : IResourceLimiter
         {
             public Capability? Requested { get; private set; }
-            public void Demand(Capability capability)
-            {
-                Requested = capability;
-            }
+            public void Enter() { }
+            public void Exit() { }
+            public void Tick() { }
+            public void Demand(Capability capability) => Requested = capability;
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace lizzie.tests
             var limiter = new TestLimiter();
             bool called = false;
             await Async.nextTick(() => called = true, limiter);
-            Assert.True(called);
+            Assert.That(called, Is.True);
             Assert.That(limiter.Requested, Is.EqualTo(Capability.Async));
         }
 
