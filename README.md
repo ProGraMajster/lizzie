@@ -8,6 +8,7 @@
 - [Quick start](#quick-start)
 - [What is a Symbolic Delegate?](#what-is-a-symbolic-delegate)
 - [Binding Lizzie to your own types](#binding-lizzie-to-your-own-types)
+- [Typed variables and host memory](#typed-variables-and-host-memory)
 - [How small is Lizzie?](#how-small-is-lizzie)
 - [How fast is Lizzie](#how-fast-is-lizzie)
   - [Execution speed](#execution-speed)
@@ -114,6 +115,44 @@ write('Hello World!!')
         function();
     }
 }
+```
+
+## Typed variables and host memory
+
+Variables are declared with the `var` function.  Supplying a type name after the
+symbol restricts assignments to values compatible with that type.
+
+```javascript
+var(@count, int, 1)
+set(@count, 2)      // OK
+set(@count, 'oops') // Throws a runtime exception
+```
+
+Lizzie also allows scripts to persist values between runs by using the host's
+memory store with the `host-var`, `host-set` and `host-del` functions.
+The example below creates a variable, modifies it, and reads it back in a
+subsequent execution.
+
+```csharp
+var store = new DefaultVariableStore();
+var none = new LambdaCompiler.Nothing();
+
+// First run: create variable in host memory
+var b1 = new Binder<LambdaCompiler.Nothing>(memory: store);
+b1["host-var"] = Host<LambdaCompiler.Nothing>.Var;
+Compiler.Compile<LambdaCompiler.Nothing>(new Tokenizer(new LizzieTokenizer()),
+    "host-var(@counter, 1)")(none, b1);
+
+// Second run: update value
+var b2 = new Binder<LambdaCompiler.Nothing>(memory: store);
+b2["host-set"] = Host<LambdaCompiler.Nothing>.Set;
+Compiler.Compile<LambdaCompiler.Nothing>(new Tokenizer(new LizzieTokenizer()),
+    "host-set(@counter, +(counter, 1))")(none, b2);
+
+// Third run: read persisted value
+var b3 = new Binder<LambdaCompiler.Nothing>(memory: store);
+var read = Compiler.Compile<LambdaCompiler.Nothing>(new Tokenizer(new LizzieTokenizer()), "counter");
+Console.WriteLine(read(none, b3)); // prints 2
 ```
 
 ## How small is Lizzie?
