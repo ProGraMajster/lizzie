@@ -231,8 +231,10 @@ what they do for you.
 ### Declaring variables
 
 To declare a variable in Lizzie you use the `var` function. This function
-requires the name of the variable as its first argument, and an optional initial
-value as its second argument. Below is an example.
+requires the name of the variable as its first argument.  The second argument
+can either be the variable's initial value, or a **type name** restricting what
+values can later be assigned.  When a type is supplied, the initial value becomes
+the third argument.  Below is an example.
 
 ```csharp
 using System;
@@ -270,8 +272,10 @@ write(foo)
 In the above Lizzie code we create a _"variable"_ named `foo`, and set its initial
 value to _"57"_, before we write out its content to the console by invoking our
 WriteLine method, which is bound to our Lizzie code, using the `[Bind]` attribute.
-The `var` function must be given at least a _"variable name"_, in addition to
-optionally an initial value for that variable. The value can be anything ranging
+The `var` function must be given at least a _"variable name"_.  When a type name
+is supplied as the second argument, all future assignments are checked against
+that type and a mismatch will throw a runtime exception.  Without a type, the
+second argument becomes the initial value.  The value can be anything ranging
 from a function, to a string, or a number of some sort - Or the return value from
 a bound C# method, allowing you to create complex objects and handle these within
 your Lizzie code.
@@ -364,6 +368,9 @@ set(@count, 6)      // OK
 set(@count, 'foo')  // Throws a runtime exception
 ```
 
+Attempting to assign a value that cannot be converted to the specified type
+raises a `LizzieRuntimeException` at runtime.
+
 ### Host memory variables
 
 Sometimes you want values to survive multiple script executions. Lizzie exposes
@@ -382,6 +389,32 @@ host-del(@greeting)
 
 Any subsequent run of a script using the same host memory can read and modify
 `greeting` until it is removed with `host-del`.
+
+The example below demonstrates creating a variable in host memory, modifying it,
+and reading it back in a later run.
+
+```csharp
+var memory = new DefaultVariableStore();
+var nothing = new LambdaCompiler.Nothing();
+
+// First run: create variable in host memory
+var binder1 = new Binder<LambdaCompiler.Nothing>(memory: memory);
+binder1["host-var"] = Host<LambdaCompiler.Nothing>.Var;
+Compiler.Compile<LambdaCompiler.Nothing>(new Tokenizer(new LizzieTokenizer()),
+    "host-var(@counter, 1)")(nothing, binder1);
+
+// Second run: increment persisted value
+var binder2 = new Binder<LambdaCompiler.Nothing>(memory: memory);
+binder2["host-set"] = Host<LambdaCompiler.Nothing>.Set;
+Compiler.Compile<LambdaCompiler.Nothing>(new Tokenizer(new LizzieTokenizer()),
+    "host-set(@counter, +(counter, 1))")(nothing, binder2);
+
+// Third run: read the value from host memory
+var binder3 = new Binder<LambdaCompiler.Nothing>(memory: memory);
+var func = Compiler.Compile<LambdaCompiler.Nothing>(new Tokenizer(new LizzieTokenizer()),
+    "counter");
+var value = func(nothing, binder3); // value is 2
+```
 
 ### Functions
 
