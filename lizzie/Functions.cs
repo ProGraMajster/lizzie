@@ -22,12 +22,13 @@ namespace lizzie
     public static class Functions<TContext>
     {
         /// <summary>
-        /// Declares a symbol, optionally setting its initial value.
-        /// 
-        /// Expects the first argument to be a symbol, referenced by an '@' prefix character,
-        /// and the optional second argument to be the initial value for that symbol.
-        /// If no second argument is provided, the initial value of the symbol
-        /// will be set to 'null'. The function will return the initial value of your symbol.
+        /// Declares a symbol with an optional type and initial value.
+        ///
+        /// Expects the first argument to be a symbol, referenced by an '@' prefix character.
+        /// The second argument can either be the initial value for the symbol (old behaviour),
+        /// or the name of the type. If a type name is supplied, an optional third argument can
+        /// be used to specify the initial value. If no third argument is provided the variable
+        /// will be initialised to the default value for the supplied type.
         /// </summary>
         /// <value>The function wrapping the 'var keyword'.</value>
         public static Function<TContext> Var => new Function<TContext>((ctx, binder, arguments) =>
@@ -51,13 +52,33 @@ namespace lizzie
             if (binder.StackCount == 0 && binder.ContainsStaticKey(symbolName))
                 throw new LizzieRuntimeException($"The symbol '{symbolName}' has already been declared in the scope of where you are trying to declare it using the 'var' keyword.");
 
-            // More sanity checks.
-            if (arguments.Count > 2)
-                throw new LizzieRuntimeException($"The 'var' keyword can only handle at most two arguments, and you tried to pass in more than two arguments as you tried to declare '{symbolName}'.");
+            // Determining declaration style.
+            if (arguments.Count > 3)
+                throw new LizzieRuntimeException($"The 'var' keyword can only handle at most three arguments, and you tried to pass in more as you tried to declare '{symbolName}'.");
 
-            // Setting the symbol's initial value, if any.
-            var value = arguments.Get(1);
-            binder[symbolName] = value;
+            Type declaredType;
+            object value;
+
+            if (arguments.Count > 1 && TryResolveType(arguments.Get(1), out declaredType)) {
+                // Typed declaration
+                value = arguments.Count > 2 ? arguments.Get(2) : (declaredType.IsValueType ? Activator.CreateInstance(declaredType) : null);
+                if (value != null && !declaredType.IsInstanceOfType(value))
+                {
+                    try {
+                        value = Convert.ChangeType(value, declaredType, CultureInfo.InvariantCulture);
+                    } catch {
+                        throw new LizzieRuntimeException($"The initial value for '{symbolName}' is not of type '{declaredType.Name}'.");
+                    }
+                }
+            } else {
+                // Legacy untyped declaration
+                if (arguments.Count > 2)
+                    throw new LizzieRuntimeException($"The 'var' keyword can only handle at most two arguments when declaring without an explicit type, and you tried to pass in more as you tried to declare '{symbolName}'.");
+                value = arguments.Get(1);
+                declaredType = typeof(object);
+            }
+
+            binder[symbolName] = new VariableEntry(declaredType, value);
             return value;
         });
 
@@ -95,9 +116,55 @@ namespace lizzie
 
             // Retrieving the initial value of the variable, setting it, and returning the value to caller.
             var value = arguments.Get(1);
-            binder[symbolName] = value;
+            binder.Set(symbolName, value);
             return value;
         });
+
+        static bool TryResolveType(object typeObj, out Type type)
+        {
+            type = null;
+            if (typeObj is Type t) {
+                type = t;
+                return true;
+            }
+            var typeName = typeObj as string;
+            if (typeName == null)
+                return false;
+            switch (typeName.ToLowerInvariant()) {
+                case "int":
+                case "int32":
+                    type = typeof(int);
+                    return true;
+                case "long":
+                case "int64":
+                    type = typeof(long);
+                    return true;
+                case "double":
+                case "float64":
+                    type = typeof(double);
+                    return true;
+                case "float":
+                case "single":
+                    type = typeof(float);
+                    return true;
+                case "string":
+                    type = typeof(string);
+                    return true;
+                case "bool":
+                case "boolean":
+                    type = typeof(bool);
+                    return true;
+                case "object":
+                    type = typeof(object);
+                    return true;
+                default:
+                    var resolved = Type.GetType(typeName, false, true) ?? Type.GetType("System." + typeName, false, true);
+                    if (resolved == null)
+                        return false;
+                    type = resolved;
+                    return true;
+            }
+        }
 
         /// <summary>
         /// Adds a bunch of things together. Can be used either for string literals,
