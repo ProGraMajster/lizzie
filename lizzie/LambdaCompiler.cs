@@ -6,6 +6,7 @@
  */
 
 using System;
+using lizzie.Std;
 
 namespace lizzie
 {
@@ -95,6 +96,9 @@ namespace lizzie
             // Variables.
             binder["var"] = Functions<TContext>.Var;
             binder["set"] = Functions<TContext>.Set;
+            binder["host-var"] = Host<TContext>.Var;
+            binder["host-set"] = Host<TContext>.Set;
+            binder["host-del"] = Host<TContext>.Del;
 
             // Comparison functions.
             binder["if"] = Functions<TContext>.If;

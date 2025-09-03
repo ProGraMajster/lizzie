@@ -16,5 +16,10 @@ namespace lizzie.Runtime
         /// Clock abstraction used for deterministic time.
         /// </summary>
         IClock Clock { get; }
+
+        /// <summary>
+        /// Global variable storage associated with the host.
+        /// </summary>
+        IVariableStore Memory { get; }
     }
 }
