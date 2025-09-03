@@ -23,7 +23,7 @@ while({
   set(@i, +(i,1))
 })");
             var result = lambda();
-            Assert.AreEqual(5, result);
+            Assert.That(result, Is.EqualTo(5));
         }
 
         [Test]
@@ -36,7 +36,7 @@ while({
             } catch (LizzieRuntimeException) {
                 success = true;
             }
-            Assert.AreEqual(true, success);
+            Assert.That(success, Is.EqualTo(true));
         }
     }
 }

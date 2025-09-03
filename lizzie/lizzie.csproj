@@ -18,11 +18,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DocumentationFile>bin\Debug\netstandard2.0\lizzie.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\net9.0\lizzie.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType></DebugType>
-    <DocumentationFile>bin\Release\netstandard2.0\lizzie.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\nets9.0\lizzie.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="exceptions\" />

@@ -20,7 +20,7 @@ namespace lizzie.tests
 }))
 foo()");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
 
         [Test]
@@ -29,7 +29,7 @@ foo()");
             var lambda = LambdaCompiler.Compile(@"return(57)
 99");
             var result = lambda();
-            Assert.AreEqual(57, result);
+            Assert.That(result, Is.EqualTo(57));
         }
     }
 }
