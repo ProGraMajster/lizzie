@@ -1,6 +1,35 @@
 
 # Lizzie reference guide
 
+## Table of Contents
+
+- [Binding your Lizzie code to your domain types](#binding-your-lizzie-code-to-your-domain-types)
+- [Pre-defined Lizzie functions](#pre-defined-lizzie-functions)
+  - [Declaring variables](#declaring-variables)
+  - [What's with the funny '@' symbol?](#whats-with-the-funny--symbol)
+  - [Changing a variable's value](#changing-a-variables-value)
+  - [Functions](#functions)
+  - [So what is a Symbolic Delegate anyway?](#so-what-is-a-symbolic-delegate-anyway)
+  - [Branching](#branching)
+  - [The definition of truth in Lizzie](#the-definition-of-truth-in-lizzie)
+  - [Returning from a function](#returning-from-a-function)
+  - [Testing for equality](#testing-for-equality)
+  - [OR and AND](#or-and-and)
+  - [Lazy condition evaluation](#lazy-condition-evaluation)
+  - [Lists](#lists)
+    - [Iterating lists](#iterating-lists)
+  - [Maps](#maps)
+  - [JSON conversion](#json-conversion)
+  - [Math](#math)
+  - [String manipulation](#string-manipulation)
+  - [Eval](#eval)
+  - [Concurrency](#concurrency)
+  - [Lizzie types](#lizzie-types)
+  - [Dependency Injection (IoC)](#dependency-injection-ioc)
+  - [Optimizing Lizzie](#optimizing-lizzie)
+    - [Caching your Lizzie lambda object](#caching-your-lizzie-lambda-object)
+  - [Donate](#donate)
+
 Lizzie is a programming language based upon the (good) ideas from Lisp, but
 without the _"funny syntax"_. Although this eliminates most of the
 peculiarities from Lisp, some _"weird"_ constructs are still necessary to create
