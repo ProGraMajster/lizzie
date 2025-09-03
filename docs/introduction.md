@@ -364,6 +364,25 @@ set(@count, 6)      // OK
 set(@count, 'foo')  // Throws a runtime exception
 ```
 
+### Host memory variables
+
+Sometimes you want values to survive multiple script executions. Lizzie exposes
+the host's memory store through the `host-var`, `host-set` and `host-del`
+functions. Variables created with these functions are stored outside of the
+normal stack and will be available the next time you run a script as long as
+the host reuses the same memory store.
+
+```javascript
+host-var(@greeting, 'hello')
+greeting           // yields 'hello'
+host-set(@greeting, 'hi')
+greeting           // yields 'hi'
+host-del(@greeting)
+```
+
+Any subsequent run of a script using the same host memory can read and modify
+`greeting` until it is removed with `host-del`.
+
 ### Functions
 
 So far we have used functions a little bit, but let's dive deeper into the syntax

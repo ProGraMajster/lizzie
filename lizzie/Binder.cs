@@ -10,8 +10,9 @@ using System.Linq;
 using System.Reflection;
 using System.Linq.Expressions;
 using System.Collections.Generic;
-using lizzie.exceptions;
 using System.Globalization;
+using lizzie.Runtime;
+using lizzie.exceptions;
 
 namespace lizzie
 {
@@ -43,8 +44,8 @@ namespace lizzie
         delegate object DeepFunction(object target, object[] arguments);
         delegate object DeepStaticFunction(object[] arguments);
 
-        // Statically bound variables/functions, and root level variables.
-        readonly Dictionary<string, VariableEntry> _staticBinder = new Dictionary<string, VariableEntry>();
+        // Statically bound variables/functions, and root level variables stored in the host's memory.
+        readonly IVariableStore _staticBinder;
 
         // Stack of dynamically created variables and functions.
         readonly List<Dictionary<string, VariableEntry>> _stackBinder = new List<Dictionary<string, VariableEntry>>();
@@ -53,11 +54,17 @@ namespace lizzie
         bool _contextIsDefault;
 
         /// <summary>
+        /// Exposes the global variable store used by this binder.
+        /// </summary>
+        public IVariableStore Memory => _staticBinder;
+
+        /// <summary>
         /// Creates a default binder, binding all bound methods in your context type.
         /// </summary>
         /// <param name="context">If not default then the constructor will perform binding on type of instance, and not on type of TContext.</param>
-        public Binder(TContext context = default(TContext))
+        public Binder(TContext context = default(TContext), IVariableStore? memory = null)
         {
+            _staticBinder = memory ?? new DefaultVariableStore();
             _contextIsDefault = EqualityComparer<TContext>.Default.Equals(context, default(TContext));
             BindPrimitives();
             BindTypeMethods(context);
@@ -67,8 +74,9 @@ namespace lizzie
          * Private CTOR to allow for cloning instances of class, without having
          * to run through reflection necessary to bind the type.
          */
-        Binder(bool initialize, TContext context = default(TContext))
+        Binder(bool initialize, TContext context = default(TContext), IVariableStore? memory = null)
         {
+            _staticBinder = memory ?? new DefaultVariableStore();
             if (initialize)
                 BindTypeMethods(context);
             BindPrimitives();
@@ -131,8 +139,8 @@ namespace lizzie
                     return _stackBinder[_stackBinder.Count - 1][symbolName].Value;
 
                 // Defaulting to looking in "static" binder.
-                if (_staticBinder.ContainsKey(symbolName))
-                    return _staticBinder[symbolName].Value;
+                if (_staticBinder.Get(symbolName, out var entry))
+                    return entry.Value;
 
                 // Oops, no such symbol!
                 throw new LizzieRuntimeException($"The '{symbolName}' symbol has not been declared.");
@@ -145,12 +153,15 @@ namespace lizzie
                  * symbol already exists at the global scope.
                  */
                 var entry = value is VariableEntry ve ? ve : new VariableEntry(value?.GetType() ?? typeof(object), value);
-                if (_stackBinder.Count == 0 || _staticBinder.ContainsKey(symbolName)) {
+                if (_stackBinder.Count == 0 || _staticBinder.Get(symbolName, out _)) {
 
                     /*
                      * Stack has not (yet) been pushed, or symbol exists in global scope.
                      */
-                    _staticBinder[symbolName] = entry;
+                    if (_staticBinder.Get(symbolName, out _))
+                        _staticBinder.Set(symbolName, entry);
+                    else
+                        _staticBinder.Create(symbolName, entry);
 
                 } else {
 
@@ -164,7 +175,7 @@ namespace lizzie
         {
             if (_stackBinder.Count > 0 && _stackBinder[_stackBinder.Count - 1].TryGetValue(symbolName, out var entry))
                 return entry;
-            if (_staticBinder.TryGetValue(symbolName, out entry))
+            if (_staticBinder.Get(symbolName, out entry))
                 return entry;
             throw new LizzieRuntimeException($"The '{symbolName}' symbol has not been declared.");
         }
@@ -173,8 +184,10 @@ namespace lizzie
         {
             if (_stackBinder.Count > 0 && _stackBinder[_stackBinder.Count - 1].ContainsKey(symbolName))
                 _stackBinder[_stackBinder.Count - 1][symbolName] = entry;
+            else if (_staticBinder.Get(symbolName, out _))
+                _staticBinder.Set(symbolName, entry);
             else
-                _staticBinder[symbolName] = entry;
+                _staticBinder.Create(symbolName, entry);
         }
 
         public T Get<T>(string symbolName)
@@ -221,7 +234,7 @@ namespace lizzie
                 return true;
 
             // Defaulting to static binder.
-            return _staticBinder.ContainsKey(symbolName);
+            return _staticBinder.Get(symbolName, out _);
         }
 
         /// <summary>
@@ -245,7 +258,7 @@ namespace lizzie
         /// <param name="symbolName">Symbol name.</param>
         public bool ContainsStaticKey(string symbolName)
         {
-            return _staticBinder.ContainsKey(symbolName);
+            return _staticBinder.Get(symbolName, out _);
         }
 
         /// <summary>
@@ -292,11 +305,9 @@ namespace lizzie
         /// <returns>The cloned instance.</returns>
         public Binder<TContext> Clone()
         {
-            var clone = new Binder<TContext>(false) {
+            var clone = new Binder<TContext>(false, memory: _staticBinder) {
                 MaxStackSize = MaxStackSize
             };
-            foreach (var ix in _staticBinder)
-                clone._staticBinder[ix.Key] = ix.Value;
             foreach (var ixStack in _stackBinder) {
                 var dictionary = new Dictionary<string, VariableEntry>();
                 foreach (var ixKey in ixStack)
@@ -352,7 +363,7 @@ namespace lizzie
         void BindMethod(MethodInfo method, string functionName)
         {
             SanityCheckSignature(method, functionName);
-            _staticBinder[functionName] = new VariableEntry(typeof(Function<TContext>), Delegate.CreateDelegate(typeof(Function<TContext>), method));
+            _staticBinder.Set(functionName, new VariableEntry(typeof(Function<TContext>), Delegate.CreateDelegate(typeof(Function<TContext>), method)));
         }
 
         /*
@@ -375,16 +386,16 @@ namespace lizzie
             if (!method.IsStatic) {
 
                 var lateBound = CreateInstanceFunction(method);
-                _staticBinder[functionName] = new VariableEntry(typeof(Function<TContext>), new Function<TContext>((ctx, binder, arguments) => {
+                _staticBinder.Set(functionName, new VariableEntry(typeof(Function<TContext>), new Function<TContext>((ctx, binder, arguments) => {
                     return lateBound(ctx, new object[] { binder, arguments });
-                }));
+                })));
 
             } else {
 
                 var lateBound = CreateStaticFunction(method);
-                _staticBinder[functionName] = new VariableEntry(typeof(Function<TContext>), new Function<TContext>((ctx, binder, arguments) => {
+                _staticBinder.Set(functionName, new VariableEntry(typeof(Function<TContext>), new Function<TContext>((ctx, binder, arguments) => {
                     return lateBound(new object[] { ctx, binder, arguments });
-                }));
+                })));
 
             }
         }
@@ -475,13 +486,13 @@ namespace lizzie
 
         void BindPrimitives()
         {
-            _staticBinder["int"] = new VariableEntry(typeof(Type), typeof(int));
-            _staticBinder["long"] = new VariableEntry(typeof(Type), typeof(long));
-            _staticBinder["double"] = new VariableEntry(typeof(Type), typeof(double));
-            _staticBinder["float"] = new VariableEntry(typeof(Type), typeof(float));
-            _staticBinder["string"] = new VariableEntry(typeof(Type), typeof(string));
-            _staticBinder["bool"] = new VariableEntry(typeof(Type), typeof(bool));
-            _staticBinder["object"] = new VariableEntry(typeof(Type), typeof(object));
+            _staticBinder.Set("int", new VariableEntry(typeof(Type), typeof(int)));
+            _staticBinder.Set("long", new VariableEntry(typeof(Type), typeof(long)));
+            _staticBinder.Set("double", new VariableEntry(typeof(Type), typeof(double)));
+            _staticBinder.Set("float", new VariableEntry(typeof(Type), typeof(float)));
+            _staticBinder.Set("string", new VariableEntry(typeof(Type), typeof(string)));
+            _staticBinder.Set("bool", new VariableEntry(typeof(Type), typeof(bool)));
+            _staticBinder.Set("object", new VariableEntry(typeof(Type), typeof(object)));
         }
 
         /*

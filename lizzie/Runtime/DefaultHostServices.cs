@@ -14,11 +14,13 @@ namespace lizzie.Runtime
 
         public Random Random { get; }
         public IClock Clock { get; }
+        public IVariableStore Memory { get; }
 
-        public DefaultHostServices(int? seed = null, IClock? clock = null)
+        public DefaultHostServices(int? seed = null, IClock? clock = null, IVariableStore? memory = null)
         {
             Random = seed.HasValue ? new Random(seed.Value) : new Random();
             Clock = clock ?? new SystemClock();
+            Memory = memory ?? new DefaultVariableStore();
         }
     }
 }

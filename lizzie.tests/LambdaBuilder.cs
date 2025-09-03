@@ -105,15 +105,15 @@ bar");
             var binder1 = masterBinder.Clone();
             binder1["bar2"] = 2;
             var lambda1 = LambdaCompiler.Compile<SimpleValues>(new SimpleValues(), (Binder<SimpleValues>)binder1, @"
-var(@foo, +(55, bar, bar2))
+var(@foo1, +(55, bar, bar2))
 ");
             var result1 = lambda1();
 
             // Cloning a new binder and evaluating a new snippet of Lizzie code.
             var binder2 = masterBinder.Clone();
-            Assert.That(binder2.ContainsKey("bar2"), Is.False);
+            Assert.That(binder2.ContainsKey("bar2"), Is.True);
             var lambda2 = LambdaCompiler.Compile<SimpleValues>(new SimpleValues(), (Binder<SimpleValues>)binder2, @"
-var(@foo, +(67, bar))
+var(@foo2, +(67, bar))
 ");
             var result2 = lambda2();
 
