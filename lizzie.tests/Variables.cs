@@ -193,5 +193,59 @@ foo";
             var result = function(ctx, binder);
             Assert.That(result, Is.EqualTo("bar"));
         }
+
+        [Test]
+        public void TypedVariableDeclaration()
+        {
+            var code = @"
+var(@foo, int, 57)
+foo";
+            var tokenizer = new Tokenizer(new LizzieTokenizer());
+            var function = Compiler.Compile<LambdaCompiler.Nothing>(tokenizer, code);
+            var ctx = new LambdaCompiler.Nothing();
+            var binder = new Binder<LambdaCompiler.Nothing>();
+            binder["var"] = Functions<LambdaCompiler.Nothing>.Var;
+            var result = function(ctx, binder);
+            Assert.That(result, Is.EqualTo(57));
+            Assert.That(binder.Get<int>("foo"), Is.EqualTo(57));
+        }
+
+        [Test]
+        public void TypedVariableReAssignment()
+        {
+            var code = @"
+var(@foo, int, 57)
+set(@foo, 67)
+foo";
+            var tokenizer = new Tokenizer(new LizzieTokenizer());
+            var function = Compiler.Compile<LambdaCompiler.Nothing>(tokenizer, code);
+            var ctx = new LambdaCompiler.Nothing();
+            var binder = new Binder<LambdaCompiler.Nothing>();
+            binder["var"] = Functions<LambdaCompiler.Nothing>.Var;
+            binder["set"] = Functions<LambdaCompiler.Nothing>.Set;
+            var result = function(ctx, binder);
+            Assert.That(result, Is.EqualTo(67));
+        }
+
+        [Test]
+        public void TypedVariableReAssignmentWrongTypeThrows()
+        {
+            var code = @"
+var(@foo, int, 57)
+set(@foo, ""bar"")";
+            var tokenizer = new Tokenizer(new LizzieTokenizer());
+            var function = Compiler.Compile<LambdaCompiler.Nothing>(tokenizer, code);
+            var ctx = new LambdaCompiler.Nothing();
+            var binder = new Binder<LambdaCompiler.Nothing>();
+            binder["var"] = Functions<LambdaCompiler.Nothing>.Var;
+            binder["set"] = Functions<LambdaCompiler.Nothing>.Set;
+            var success = false;
+            try {
+                function(ctx, binder);
+            } catch (LizzieRuntimeException) {
+                success = true;
+            }
+            Assert.That(success, Is.True);
+        }
     }
 }

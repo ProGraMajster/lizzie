@@ -354,6 +354,16 @@ The above code first declares the `foo` variable and assigns its initial value
 to 57, for then to change its value to 67. The `set` keyword or function is what
 we use to change a variable's value.
 
+If you want to restrict a variable to a specific type, provide the type name as
+the second argument to `var`. Subsequent assignments must then be compatible with
+this type.
+
+```javascript
+var(@count, int, 5)
+set(@count, 6)      // OK
+set(@count, 'foo')  // Throws a runtime exception
+```
+
 ### Functions
 
 So far we have used functions a little bit, but let's dive deeper into the syntax
