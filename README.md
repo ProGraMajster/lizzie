@@ -3,11 +3,26 @@
 
 [![Build status](https://travis-ci.org/polterguy/lizzie.svg?master)](https://travis-ci.org/polterguy/lizzie)
 
+## Table of Contents
+
+- [Quick start](#quick-start)
+- [What is a Symbolic Delegate?](#what-is-a-symbolic-delegate)
+- [Binding Lizzie to your own types](#binding-lizzie-to-your-own-types)
+- [How small is Lizzie?](#how-small-is-lizzie)
+- [How fast is Lizzie](#how-fast-is-lizzie)
+  - [Execution speed](#execution-speed)
+- [A 5 minutes introductory video to Lizzie](#a-5-minutes-introductory-video-to-lizzie)
+- [Reference documentation](#reference-documentation)
+- [Installation](#installation)
+- [License](#license)
+
 Lizzie is a dynamic scripting language for .Net based upon a design pattern
 called _"Symbolic Delegates"_. This allows you to execute dynamically created
 scripts, that does neither compile nor are interpreted, but instead _"compiles"_
 directly down to managed CLR delegates. Below is an example of using Lizzie from
 C#.
+
+## Quick start
 
 ```csharp
 using System;
@@ -254,3 +269,8 @@ PM > Install-Package lizzie
 ```
 
 Or visit the [download page to get its source code](https://github.com/ProGraMajster/lizzie/releases)
+
+## License
+
+Licensed under the [MIT License](LICENSE).
+
