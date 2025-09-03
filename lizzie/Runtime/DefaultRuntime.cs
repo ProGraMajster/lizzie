@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using lizzie.Runtime.Config;
 using lizzie.exceptions;
@@ -35,7 +37,8 @@ namespace lizzie.Runtime
                 entries.Add(new SourceMapEntry(moduleName, i + 1, 1, lines[i]));
             }
             var module = new CompiledModule(moduleName, new SourceMap(entries));
-            _cache.Store(module);
+            var hash = ComputeHash(code);
+            _cache.Store(hash, moduleName, module);
             return module;
         }
 
@@ -66,6 +69,12 @@ namespace lizzie.Runtime
                 await Task.Yield();
             }
             return ScriptValue.Null;
+        }
+        private static string ComputeHash(string code)
+        {
+            using var sha = SHA256.Create();
+            var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(code));
+            return Convert.ToHexString(bytes);
         }
     }
 }
