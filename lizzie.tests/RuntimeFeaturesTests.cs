@@ -7,6 +7,7 @@ using lizzie.Runtime;
 using lizzie.Runtime.Config;
 using lizzie.Std;
 using Xunit;
+using System.IO;
 
 namespace lizzie.tests
 {
@@ -88,6 +89,18 @@ namespace lizzie.tests
         {
             var ctx = RuntimeProfiles.UnityDefaults();
             Assert.False(ctx.Sandbox.Has(Capability.FileSystem));
+        }
+
+        [Fact]
+        public void FilesystemWhitelistEnforced()
+        {
+            var temp = Path.GetTempPath();
+            var ctx = RuntimeProfiles.ServerDefaults(filesystemWhitelist: new[] { temp });
+            var fsPolicy = Assert.IsAssignableFrom<IFilesystemPolicy>(ctx.Sandbox);
+            var allowed = Path.Combine(temp, "file.txt");
+            var disallowed = Path.Combine(Path.GetPathRoot(temp) ?? "/", "somewhere", "else.txt");
+            Assert.True(fsPolicy.IsPathAllowed(allowed));
+            Assert.False(fsPolicy.IsPathAllowed(disallowed));
         }
     }
 }

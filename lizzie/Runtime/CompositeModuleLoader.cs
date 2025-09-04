@@ -10,11 +10,13 @@ namespace lizzie.Runtime
     {
         private readonly IDictionary<string, string> _embedded;
         private readonly string _basePath;
+        private readonly ISandboxPolicy? _sandbox;
 
-        public CompositeModuleLoader(IDictionary<string, string>? embedded = null, string? basePath = null)
+        public CompositeModuleLoader(IDictionary<string, string>? embedded = null, string? basePath = null, ISandboxPolicy? sandbox = null)
         {
             _embedded = embedded ?? new Dictionary<string, string>();
             _basePath = basePath ?? Directory.GetCurrentDirectory();
+            _sandbox = sandbox;
         }
 
         public bool TryLoad(string name, out string code)
@@ -25,6 +27,19 @@ namespace lizzie.Runtime
             }
 
             var path = Path.Combine(_basePath, name);
+            if (_sandbox != null)
+            {
+                if (!_sandbox.Has(Capability.FileSystem))
+                {
+                    code = string.Empty;
+                    return false;
+                }
+                if (_sandbox is IFilesystemPolicy fs && !fs.IsPathAllowed(path))
+                {
+                    code = string.Empty;
+                    return false;
+                }
+            }
             if (File.Exists(path))
             {
                 code = File.ReadAllText(path);
