@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace lizzie.Runtime
 {
@@ -97,7 +98,7 @@ namespace lizzie.Runtime
         /// while delegating capability management to an internal
         /// <see cref="CapabilitySandbox"/>.
         /// </summary>
-        private sealed class ReadOnlySandboxPolicy : ISandboxPolicy
+        private sealed class ReadOnlySandboxPolicy : ISandboxPolicy, IFilesystemPolicy
         {
             private readonly CapabilitySandbox _capabilities = new();
 
@@ -115,6 +116,20 @@ namespace lizzie.Runtime
             public bool Has(Capability capability) => _capabilities.Has(capability);
             public void Allow(Capability capability) => _capabilities.Allow(capability);
             public void Deny(Capability capability) => _capabilities.Deny(capability);
+
+            public bool IsPathAllowed(string path)
+            {
+                var full = Path.GetFullPath(path);
+                foreach (var allowed in FilesystemWhitelist)
+                {
+                    var allowedFull = Path.GetFullPath(allowed)
+                        .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                    if (full.StartsWith(allowedFull + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(full, allowedFull, StringComparison.OrdinalIgnoreCase))
+                        return true;
+                }
+                return false;
+            }
         }
     }
 }
