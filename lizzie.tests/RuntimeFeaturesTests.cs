@@ -107,9 +107,17 @@ namespace lizzie.tests
         public void HttpWhitelistEnforced()
         {
             var ctx = RuntimeProfiles.ServerDefaults(httpWhitelist: new[] { "https://example.com" });
+            Assert.True(ctx.Sandbox.Has(Capability.Network));
             var netPolicy = Assert.IsAssignableFrom<INetworkPolicy>(ctx.Sandbox);
             Assert.True(netPolicy.IsOriginAllowed(new Uri("https://example.com/resource")));
             Assert.False(netPolicy.IsOriginAllowed(new Uri("https://notallowed.com")));
+        }
+
+        [Fact]
+        public void NetworkCapabilityMissingWithoutWhitelist()
+        {
+            var ctx = RuntimeProfiles.ServerDefaults();
+            Assert.False(ctx.Sandbox.Has(Capability.Network));
         }
     }
 }

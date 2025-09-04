@@ -50,6 +50,8 @@ namespace lizzie.Runtime
             sandbox.Allow(Capability.Async);
             sandbox.Allow(Capability.Random);
             sandbox.Allow(Capability.FileSystem);
+            if (httpWhitelist != null)
+                sandbox.Allow(Capability.Network);
             var limiter = new DefaultResourceLimiter();
             var ctx = new DefaultScriptContext(
                 scheduler: new DefaultScheduler(),
