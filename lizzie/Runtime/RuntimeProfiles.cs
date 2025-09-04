@@ -23,12 +23,14 @@ namespace lizzie.Runtime
         {
             var sandbox = new CapabilitySandbox(Capability.UnityMainThread | Capability.Time | Capability.Async | Capability.Random);
             var limiter = new FrameBudgetLimiter(frameBudget);
-            return new DefaultScriptContext(
+            var ctx = new DefaultScriptContext(
                 scheduler: new DefaultScheduler(),
                 sandbox: sandbox,
                 bindings: new SimpleBindingRegistry(),
                 resources: limiter,
                 host: new DefaultHostServices());
+            ctx.BindFileModule();
+            return ctx;
         }
 
         /// <summary>
@@ -49,12 +51,14 @@ namespace lizzie.Runtime
             sandbox.Allow(Capability.Random);
             sandbox.Allow(Capability.FileSystem);
             var limiter = new DefaultResourceLimiter();
-            return new DefaultScriptContext(
+            var ctx = new DefaultScriptContext(
                 scheduler: new DefaultScheduler(),
                 sandbox: sandbox,
                 bindings: new SimpleBindingRegistry(),
                 resources: limiter,
                 host: new DefaultHostServices());
+            ctx.BindFileModule();
+            return ctx;
         }
 
         /// <summary>
