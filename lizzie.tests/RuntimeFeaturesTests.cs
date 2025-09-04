@@ -102,5 +102,14 @@ namespace lizzie.tests
             Assert.True(fsPolicy.IsPathAllowed(allowed));
             Assert.False(fsPolicy.IsPathAllowed(disallowed));
         }
+
+        [Fact]
+        public void HttpWhitelistEnforced()
+        {
+            var ctx = RuntimeProfiles.ServerDefaults(httpWhitelist: new[] { "https://example.com" });
+            var netPolicy = Assert.IsAssignableFrom<INetworkPolicy>(ctx.Sandbox);
+            Assert.True(netPolicy.IsOriginAllowed(new Uri("https://example.com/resource")));
+            Assert.False(netPolicy.IsOriginAllowed(new Uri("https://notallowed.com")));
+        }
     }
 }
