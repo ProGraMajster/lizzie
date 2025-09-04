@@ -102,7 +102,7 @@ namespace lizzie.Runtime
         /// while delegating capability management to an internal
         /// <see cref="CapabilitySandbox"/>.
         /// </summary>
-        private sealed class ReadOnlySandboxPolicy : ISandboxPolicy, IFilesystemPolicy
+        private sealed class ReadOnlySandboxPolicy : ISandboxPolicy, IFilesystemPolicy, INetworkPolicy
         {
             private readonly CapabilitySandbox _capabilities = new();
 
@@ -130,6 +130,17 @@ namespace lizzie.Runtime
                         .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
                     if (full.StartsWith(allowedFull + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)
                         || string.Equals(full, allowedFull, StringComparison.OrdinalIgnoreCase))
+                        return true;
+                }
+                return false;
+            }
+
+            public bool IsOriginAllowed(Uri origin)
+            {
+                var auth = origin.GetLeftPart(UriPartial.Authority);
+                foreach (var allowed in HttpWhitelist)
+                {
+                    if (string.Equals(auth, allowed, StringComparison.OrdinalIgnoreCase))
                         return true;
                 }
                 return false;
