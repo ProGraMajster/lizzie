@@ -9,6 +9,7 @@ namespace lizzie.Runtime
         Time = 1 << 0,
         Async = 1 << 1,
         Random = 1 << 2,
-        UnityMainThread = 1 << 3
+        UnityMainThread = 1 << 3,
+        FileSystem = 1 << 4
     }
 }
