@@ -75,5 +75,19 @@ namespace lizzie.tests
             var limiter = new SandboxLimiter(sandbox);
             Assert.Throws<InvalidOperationException>(() => Time.now(limiter));
         }
+
+        [Fact]
+        public void ServerDefaultsAllowFileSystem()
+        {
+            var ctx = RuntimeProfiles.ServerDefaults();
+            Assert.True(ctx.Sandbox.Has(Capability.FileSystem));
+        }
+
+        [Fact]
+        public void UnityDefaultsDenyFileSystem()
+        {
+            var ctx = RuntimeProfiles.UnityDefaults();
+            Assert.False(ctx.Sandbox.Has(Capability.FileSystem));
+        }
     }
 }

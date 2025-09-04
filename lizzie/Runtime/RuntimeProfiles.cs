@@ -46,6 +46,7 @@ namespace lizzie.Runtime
             sandbox.Allow(Capability.Time);
             sandbox.Allow(Capability.Async);
             sandbox.Allow(Capability.Random);
+            sandbox.Allow(Capability.FileSystem);
             var limiter = new DefaultResourceLimiter();
             return new DefaultScriptContext(
                 scheduler: new DefaultScheduler(),
