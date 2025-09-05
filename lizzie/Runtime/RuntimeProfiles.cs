@@ -14,9 +14,9 @@ namespace lizzie.Runtime
         /// <summary>
         /// Creates a <see cref="IScriptContext"/> with settings suited for the
         /// Unity environment. The returned context enables the
-        /// <see cref="Capability.UnityMainThread"/> capability and installs a
+        /// <see cref="Capability.UnityMainThread"/> capability, installs a
         /// resource limiter that enforces a simple per-frame instruction
-        /// budget.
+        /// budget, and registers the standard file and HTTP modules.
         /// </summary>
         /// <param name="frameBudget">Maximum number of instructions allowed per frame.</param>
         public static IScriptContext UnityDefaults(int frameBudget = 1000)
@@ -37,8 +37,10 @@ namespace lizzie.Runtime
         /// <summary>
         /// Creates a <see cref="IScriptContext"/> configured for a typical
         /// server environment. The context omits the
-        /// <see cref="Capability.UnityMainThread"/> capability and exposes
-        /// read-only HTTP and filesystem whitelists.
+        /// <see cref="Capability.UnityMainThread"/> capability, exposes
+        /// read-only HTTP and filesystem whitelists, and registers the
+        /// standard file and HTTP modules. Supplying an HTTP whitelist enables
+        /// the <see cref="Capability.Network"/> capability.
         /// </summary>
         /// <param name="httpWhitelist">Collection of HTTP origins allowed for requests.</param>
         /// <param name="filesystemWhitelist">Collection of directory paths allowed for file access.</param>
