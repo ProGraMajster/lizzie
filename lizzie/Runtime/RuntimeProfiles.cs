@@ -30,6 +30,7 @@ namespace lizzie.Runtime
                 resources: limiter,
                 host: new DefaultHostServices());
             ctx.BindFileModule();
+            ctx.BindHttpModule();
             return ctx;
         }
 
@@ -60,6 +61,7 @@ namespace lizzie.Runtime
                 resources: limiter,
                 host: new DefaultHostServices());
             ctx.BindFileModule();
+            ctx.BindHttpModule();
             return ctx;
         }
 
