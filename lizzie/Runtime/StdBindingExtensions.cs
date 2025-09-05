@@ -1,5 +1,6 @@
 using System;
 using FileModule = lizzie.Std.File;
+using HttpModule = lizzie.Std.Http;
 
 namespace lizzie.Runtime
 {
@@ -21,6 +22,18 @@ namespace lizzie.Runtime
             ctx.Bindings.Bind("listDir", (Func<string, string[]>)(path => FileModule.listDir(path, limiter, fs)));
             ctx.Bindings.Bind("createDir", (Action<string>)(path => FileModule.createDir(path, limiter, fs)));
             ctx.Bindings.Bind("delete", (Action<string>)(path => FileModule.delete(path, limiter, fs)));
+        }
+
+        /// <summary>
+        /// Registers HTTP functions in the provided script context's binding registry.
+        /// </summary>
+        public static void BindHttpModule(this IScriptContext ctx)
+        {
+            if (ctx.Sandbox is not INetworkPolicy net)
+                return;
+            var limiter = ctx.Resources;
+            ctx.Bindings.Bind("get", (Func<string, string>)(url => HttpModule.get(url, limiter, net)));
+            ctx.Bindings.Bind("post", (Func<string, string, string>)((url, body) => HttpModule.post(url, body, limiter, net)));
         }
     }
 }
