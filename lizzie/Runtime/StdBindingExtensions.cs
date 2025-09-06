@@ -34,6 +34,8 @@ namespace lizzie.Runtime
             var limiter = ctx.Resources;
             ctx.Bindings.Bind("get", (Func<string, string>)(url => HttpModule.get(url, limiter, net)));
             ctx.Bindings.Bind("post", (Func<string, string, string>)((url, body) => HttpModule.post(url, body, limiter, net)));
+            ctx.Bindings.Bind("put", (Func<string, string, string>)((url, body) => HttpModule.put(url, body, limiter, net)));
+            ctx.Bindings.Bind("deleteUrl", (Func<string, string>)(url => HttpModule.delete(url, limiter, net)));
         }
     }
 }
