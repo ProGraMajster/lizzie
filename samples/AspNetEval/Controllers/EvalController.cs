@@ -1,6 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 using lizzie;
+using lizzie.Runtime;
 using AspNetEval.Models;
 
 namespace AspNetEval.Controllers;
@@ -14,7 +15,8 @@ public class EvalController : ControllerBase
     {
         try
         {
-            var lambda = LambdaCompiler.Compile(request.Script);
+            var ctx = RuntimeProfiles.ServerDefaults();
+            var lambda = LambdaCompiler.Compile(ctx, request.Script);
             var result = lambda();
             return Ok(new { result });
         }
