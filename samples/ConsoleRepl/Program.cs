@@ -1,6 +1,8 @@
 using System;
 using lizzie;
+using lizzie.Runtime;
 
+var ctx = RuntimeProfiles.ServerDefaults();
 Console.WriteLine("Lizzie REPL - type 'exit' to quit");
 string? line;
 while ((line = Console.ReadLine()) != null)
@@ -13,7 +15,7 @@ while ((line = Console.ReadLine()) != null)
 
     try
     {
-        var lambda = LambdaCompiler.Compile(line);
+        var lambda = LambdaCompiler.Compile(ctx, line);
         var result = lambda();
         Console.WriteLine(result ?? "null");
     }
