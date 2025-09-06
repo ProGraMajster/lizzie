@@ -14,12 +14,14 @@ invocations.
 ## HTTP module
 
 Lizzie ships with an HTTP module exposing simple helpers for making network
-requests from scripts. The module provides `get` and `post` functions that
-perform HTTP GET and POST operations respectively.
+requests from scripts. The module provides `get`, `post`, `put` and `deleteUrl`
+functions that perform HTTP GET, POST, PUT and DELETE operations respectively.
 
 ```lizzie
 get("https://example.com")
 post("https://example.com/api", "{ 'foo': 42 }")
+put("https://example.com/api/1", "{ 'foo': 43 }")
+deleteUrl("https://example.com/api/1")
 ```
 
 Using these functions requires the runtime to allow `Capability.Network` and
@@ -32,7 +34,7 @@ whitelist and automatically register the HTTP module:
 ```csharp
 var ctx = RuntimeProfiles.ServerDefaults(
     httpWhitelist: new[] { "https://example.com" });
-// ctx exposes the get/post functions and enforces the whitelist
+// ctx exposes the HTTP functions and enforces the whitelist
 ```
 
 Origins must be specified using the scheme and authority (e.g.

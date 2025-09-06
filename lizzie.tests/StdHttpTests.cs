@@ -93,6 +93,61 @@ namespace lizzie.tests
         }
 
         [Fact]
+        public void PutDemandsCapabilityAndRespectsPolicy()
+        {
+            var port = GetFreePort();
+            var url = $"http://localhost:{port}/";
+            using var listener = new HttpListener();
+            listener.Prefixes.Add(url);
+            listener.Start();
+            var handler = Task.Run(async () =>
+            {
+                var ctx = await listener.GetContextAsync();
+                using var reader = new StreamReader(ctx.Request.InputStream);
+                var received = await reader.ReadToEndAsync();
+                var buffer = Encoding.UTF8.GetBytes(received);
+                ctx.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                ctx.Response.Close();
+            });
+
+            var limiter = new TestLimiter();
+            var policy = new TestPolicy(true);
+            var result = HttpModule.put(url, "payload", limiter, policy);
+            handler.Wait();
+            listener.Stop();
+
+            Assert.Equal("payload", result);
+            Assert.Equal(Capability.Network, limiter.Requested);
+        }
+
+        [Fact]
+        public void DeleteDemandsCapabilityAndRespectsPolicy()
+        {
+            var port = GetFreePort();
+            var url = $"http://localhost:{port}/";
+            using var listener = new HttpListener();
+            listener.Prefixes.Add(url);
+            listener.Start();
+            var handler = Task.Run(async () =>
+            {
+                var ctx = await listener.GetContextAsync();
+                using var writer = new StreamWriter(ctx.Response.OutputStream);
+                await writer.WriteAsync("deleted");
+                writer.Flush();
+                ctx.Response.Close();
+            });
+
+            var limiter = new TestLimiter();
+            var policy = new TestPolicy(true);
+            var result = HttpModule.delete(url, limiter, policy);
+            handler.Wait();
+            listener.Stop();
+
+            Assert.Equal("deleted", result);
+            Assert.Equal(Capability.Network, limiter.Requested);
+        }
+
+        [Fact]
         public void GetDeniedWhenPolicyRejects()
         {
             var limiter = new TestLimiter();
@@ -102,13 +157,17 @@ namespace lizzie.tests
         }
 
         [Fact]
-        public void BindingRegistryProvidesGetAndPost()
+        public void BindingRegistryProvidesHttpFunctions()
         {
             var ctx = RuntimeProfiles.ServerDefaults(httpWhitelist: new[] { "https://example.com" });
             Assert.True(ctx.Bindings.TryGet("get", out var getFn));
             Assert.IsType<Func<string, string>>(getFn);
             Assert.True(ctx.Bindings.TryGet("post", out var postFn));
             Assert.IsType<Func<string, string, string>>(postFn);
+            Assert.True(ctx.Bindings.TryGet("put", out var putFn));
+            Assert.IsType<Func<string, string, string>>(putFn);
+            Assert.True(ctx.Bindings.TryGet("deleteUrl", out var deleteFn));
+            Assert.IsType<Func<string, string>>(deleteFn);
         }
     }
 }
